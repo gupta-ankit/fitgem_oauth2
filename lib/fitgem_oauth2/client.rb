@@ -8,6 +8,16 @@ module FitgemOauth2
     attr_accessor :user_id
 
     def initialize(opts)
+      @client_id = opts[:client_id]
+      if @token.nil?
+        puts "TODO. Raise an exception due to missing client id"
+      end
+
+      @client_secret = opts[:client_secret]
+      if @token.nil?
+        puts "TODO. Raise an exception due to missing client secret"
+      end
+
       @token = opts[:token]
       if @token.nil?
         puts "TODO. Raise an exception due to missing token"
