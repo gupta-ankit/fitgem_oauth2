@@ -1,3 +1,4 @@
+require 'base64'
 require 'faraday'
 
 module FitgemOauth2
@@ -9,12 +10,12 @@ module FitgemOauth2
 
     def initialize(opts)
       @client_id = opts[:client_id]
-      if @token.nil?
+      if @client_id.nil?
         puts "TODO. Raise an exception due to missing client id"
       end
 
       @client_secret = opts[:client_secret]
-      if @token.nil?
+      if @client_secret.nil?
         puts "TODO. Raise an exception due to missing client secret"
       end
 
@@ -34,8 +35,20 @@ module FitgemOauth2
 
     def activities_on_date(date)
       connection.get "1/user/#{user_id}/activities/date/#{format_date(date)}.json" do |request|
-        request.headers['Authorization'] = "Basic #{token}"
+        request.headers['Authorization'] = "Bearer #{token}"
+        request.headers['Content-Type'] = "application/x-www-form-urlencoded"
       end
+    end
+
+    def refresh_access_token(refresh_token)
+      response = connection.post('/oauth2/token') do |request|
+        encoded = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
+        request.headers['Authorization'] = "Basic #{encoded}"
+        request.headers['Content-Type'] = "application/x-www-form-urlencoded"
+        request.params['grant_type'] = "refresh_token"
+        request.params['refresh_token'] = refresh_token
+      end
+      response.body
     end
 
     private
