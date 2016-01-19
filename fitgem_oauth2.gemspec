@@ -9,4 +9,6 @@ Gem::Specification.new do |s|
   s.files       = %w(fitgem_oauth2.gemspec) + `git ls-files -z`.split("\x0").select { |f| f.start_with?("lib/") }
   s.homepage    = 'http://rubygems.org/gems/fitgem_oauth2'
   s.license     = 'MIT'
+
+  s.add_runtime_dependency 'faraday', '~> 0.7.0'
 end
