@@ -2,6 +2,8 @@ require 'fitgem_oauth2/activity.rb'
 require 'fitgem_oauth2/sleep.rb'
 require 'fitgem_oauth2/steps.rb'
 
+require 'fitgem_oauth2/steps.rb'
+
 require 'base64'
 require 'faraday'
 
