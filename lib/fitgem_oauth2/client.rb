@@ -1,3 +1,7 @@
+require 'fitgem_oauth2/activity.rb'
+require 'fitgem_oauth2/sleep.rb'
+require 'fitgem_oauth2/steps.rb'
+
 require 'base64'
 require 'faraday'
 
@@ -32,13 +36,14 @@ module FitgemOauth2
       @connection = Faraday.new("https://api.fitbit.com")
     end
 
-
-    def activities_on_date(date)
-      connection.get "1/user/#{user_id}/activities/date/#{format_date(date)}.json" do |request|
+    def get_call(url)
+      response = connection.get  do |request|
         request.headers['Authorization'] = "Bearer #{token}"
         request.headers['Content-Type'] = "application/x-www-form-urlencoded"
       end
+      response
     end
+
 
     def refresh_access_token(refresh_token)
       response = connection.post('/oauth2/token') do |request|
