@@ -2,7 +2,7 @@ require 'fitgem_oauth2/activity.rb'
 require 'fitgem_oauth2/sleep.rb'
 require 'fitgem_oauth2/steps.rb'
 
-require 'fitgem_oauth2/steps.rb'
+require 'fitgem_oauth2/utils.rb'
 
 require 'base64'
 require 'faraday'
@@ -47,7 +47,14 @@ module FitgemOauth2
         request.headers['Authorization'] = "Bearer #{token}"
         request.headers['Content-Type'] = "application/x-www-form-urlencoded"
       end
-      JSON.parse(response.body).merge!(response.headers)
+      case response.status
+      when 200; return JSON.parse(response.body).merge!(response.headers)
+      when 400; raise FitgemOauth2::BadRequestError
+      when 401; raise FitgemOauth2::UnauthorizedError
+      when 403; raise FitgemOauth2::ForbiddenError
+      when 404; raise FitgemOauth2::NotFoundError
+      when 500..599; raise FitgemOauth2::ServerError
+      end
     end
 
 
@@ -63,19 +70,7 @@ module FitgemOauth2
     end
 
     private
-
-    attr_accessor :connection
-
-    def format_date(date)
-      date
-    end
-
-    def get(url)
-
-    end
-
-    def raw_get(url)
-    end
+    attr_reader :connection
 
   end
 end
