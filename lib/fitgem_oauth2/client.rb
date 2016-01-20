@@ -8,9 +8,13 @@ require 'faraday'
 module FitgemOauth2
   class Client
 
-    attr_accessor :token
+    attr_reader :token
 
-    attr_accessor :user_id
+    attr_reader :user_id
+
+    attr_reader :client_id
+
+    attr_reader :client_secret
 
     def initialize(opts)
       @client_id = opts[:client_id]
@@ -37,11 +41,11 @@ module FitgemOauth2
     end
 
     def get_call(url)
-      response = connection.get  do |request|
+      response = connection.get(url)  do |request|
         request.headers['Authorization'] = "Bearer #{token}"
         request.headers['Content-Type'] = "application/x-www-form-urlencoded"
       end
-      response
+      JSON.parse(response.body).merge!(response.headers)
     end
 
 
