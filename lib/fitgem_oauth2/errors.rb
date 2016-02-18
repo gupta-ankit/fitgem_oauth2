@@ -1,7 +1,7 @@
 module FitgemOauth2
   class InvalidDateArgument < ArgumentError
   end
-
+  
   # HTTP errors
   class BadRequestError < StandardError
   end
@@ -17,5 +17,4 @@ module FitgemOauth2
 
   class ServerError < StandardError
   end
-  
 end

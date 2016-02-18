@@ -47,8 +47,11 @@ module FitgemOauth2
         request.headers['Authorization'] = "Bearer #{token}"
         request.headers['Content-Type'] = "application/x-www-form-urlencoded"
       end
+
+      headers_to_keep = ["fitbit-rate-limit-limit","fitbit-rate-limit-remaining","fitbit-rate-limit-reset"]
+
       case response.status
-      when 200; return JSON.parse(response.body).merge!(response.headers)
+      when 200; return JSON.parse(response.body).merge!(response.headers.slice(*headers_to_keep))
       when 400; raise FitgemOauth2::BadRequestError
       when 401; raise FitgemOauth2::UnauthorizedError
       when 403; raise FitgemOauth2::ForbiddenError
