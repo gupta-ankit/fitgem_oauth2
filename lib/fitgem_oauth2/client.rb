@@ -4,6 +4,8 @@ require 'fitgem_oauth2/steps.rb'
 
 require 'fitgem_oauth2/utils.rb'
 
+require 'fitgem_oauth2/errors.rb'
+
 require 'base64'
 require 'faraday'
 
