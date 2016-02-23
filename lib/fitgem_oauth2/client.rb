@@ -72,7 +72,7 @@ module FitgemOauth2
         request.params['grant_type'] = "refresh_token"
         request.params['refresh_token'] = refresh_token
       end
-      response.body
+      return JSON.parse(response.body)
     end
 
     private
