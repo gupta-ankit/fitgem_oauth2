@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'fitgem_oauth2'
-  s.version     = '0.0.4'
+  s.version     = '0.0.5'
   s.date        = '2016-01-18'
   s.summary     = "This gem allows requesting data from Fitbit API using OAuth2"
   s.description = "This gem allows requesting data from Fitbit API using OAuth2"
