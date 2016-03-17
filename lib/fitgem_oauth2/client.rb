@@ -1,11 +1,11 @@
 require 'fitgem_oauth2/activity.rb'
+require 'fitgem_oauth2/body_measurements.rb'
 require 'fitgem_oauth2/errors.rb'
 require 'fitgem_oauth2/sleep.rb'
 require 'fitgem_oauth2/steps.rb'
 require 'fitgem_oauth2/users.rb'
 require 'fitgem_oauth2/utils.rb'
-
-
+require 'fitgem_oauth2/version.rb'
 
 require 'base64'
 require 'faraday'
@@ -39,7 +39,7 @@ module FitgemOauth2
 
       @user_id = opts[:user_id]
       if @user_id.nil?
-        puts "TODO. Raise an exception due to missing fitbit user id"
+        @user_id = "-"
       end
 
       @connection = Faraday.new("https://api.fitbit.com")
