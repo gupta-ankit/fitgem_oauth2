@@ -7,6 +7,7 @@ require 'fitgem_oauth2/friends.rb'
 require 'fitgem_oauth2/heartrate.rb'
 require 'fitgem_oauth2/sleep.rb'
 require 'fitgem_oauth2/steps.rb'
+require 'fitgem_oauth2/subscription.rb'
 require 'fitgem_oauth2/users.rb'
 require 'fitgem_oauth2/utils.rb'
 require 'fitgem_oauth2/version.rb'
@@ -67,6 +68,23 @@ module FitgemOauth2
       end
     end
 
+    # @param payload [Hash] or similar will be converted to json
+    # @return [Array] of [response_code, response_data] where the data
+    #         is parsed JSON similar to what you get back from a get
+    #         call.
+    def post_call(url, headers = {}, payload = nil)
+      response = connection.post  do |request|
+        json_request(request, url, payload, headers)
+      end
+      json_response(response)
+    end
+
+    def delete_call(url, headers = {}, payload = nil)
+      response = connection.delete do |request|
+        json_request(request, url, payload, headers)
+      end
+      json_response(response)
+    end
 
     def refresh_access_token(refresh_token)
       response = connection.post('/oauth2/token') do |request|
@@ -82,5 +100,20 @@ module FitgemOauth2
     private
     attr_reader :connection
 
+    # Configure a faraday request for json interaction
+    def json_request(request, url, payload, headers)
+      request.url = url
+      request.headers['Authorization'] = "Bearer #{token}"
+      request.headers['Content-Type'] = 'application/json'
+      request.headers.merge!(headers) if headers
+      request.body = payload.to_json if payload
+    end
+
+    # Parse a json response, returning [code, data] tuple.
+    def json_response(response)
+      headers_to_keep = ["fitbit-rate-limit-limit","fitbit-rate-limit-remaining","fitbit-rate-limit-reset"]
+      raise FitgetmOauth2::ServerError if response.status >= 500
+      [response.status, JSON.parse(response.body).merge!(response.headers.slice(*headers_to_keep))]
+    end
   end
 end
