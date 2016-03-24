@@ -102,7 +102,7 @@ module FitgemOauth2
 
     # Configure a faraday request for json interaction
     def json_request(request, url, payload, headers)
-      request.url = url
+      request.url url
       request.headers['Authorization'] = "Bearer #{token}"
       request.headers['Content-Type'] = 'application/json'
       request.headers.merge!(headers) if headers
