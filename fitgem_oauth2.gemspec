@@ -6,7 +6,6 @@ require 'fitgem_oauth2/version'
 Gem::Specification.new do |s|
   s.name        = 'fitgem_oauth2'
   s.version     = FitgemOauth2::VERSION
-  s.date        = Date.today.to_s
   s.summary     = "Fitbit API client library"
   s.description = "This gem allows requesting data from Fitbit API using OAuth2"
   s.authors     = ["Ankit Gupta"]
