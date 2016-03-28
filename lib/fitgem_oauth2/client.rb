@@ -39,6 +39,17 @@ module FitgemOauth2
       @connection = Faraday.new("https://api.fitbit.com")
     end
 
+    def refresh_access_token(refresh_token)
+      response = connection.post('/oauth2/token') do |request|
+        encoded = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
+        request.headers['Authorization'] = "Basic #{encoded}"
+        request.headers['Content-Type'] = "application/x-www-form-urlencoded"
+        request.params['grant_type'] = "refresh_token"
+        request.params['refresh_token'] = refresh_token
+      end
+      return JSON.parse(response.body)
+    end
+
     def get_call(url)
       response = connection.get(url) { |request| set_headers(request) }
       return parse_response(response)
@@ -53,6 +64,9 @@ module FitgemOauth2
       response = connection.delete(url) { |request| set_headers(request) }
       return parse_response(response)
     end
+
+    private
+    attr_reader :connection
 
     def set_headers(request)
       request.headers['Authorization'] = "Bearer #{token}"
@@ -71,20 +85,6 @@ module FitgemOauth2
         when 500..599; raise FitgemOauth2::ServerError
       end
     end
-
-    def refresh_access_token(refresh_token)
-      response = connection.post('/oauth2/token') do |request|
-        encoded = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
-        request.headers['Authorization'] = "Basic #{encoded}"
-        request.headers['Content-Type'] = "application/x-www-form-urlencoded"
-        request.params['grant_type'] = "refresh_token"
-        request.params['refresh_token'] = refresh_token
-      end
-      return JSON.parse(response.body)
-    end
-
-    private
-    attr_reader :connection
 
   end
 end
