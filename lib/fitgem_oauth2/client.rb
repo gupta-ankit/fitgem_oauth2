@@ -17,34 +17,23 @@ require 'faraday'
 module FitgemOauth2
   class Client
 
-    attr_reader :token
-
-    attr_reader :user_id
+    DEFAULT_USER_ID = '-'
 
     attr_reader :client_id
-
     attr_reader :client_secret
+    attr_reader :token
+    attr_reader :user_id
 
     def initialize(opts)
+      missing = [:client_id, :client_secret, :token] - opts.keys
+      if missing.size > 0
+        raise FitgemOauth2::InvalidArgumentError, "Missing required options: #{missing.join(',')}"
+      end
+
       @client_id = opts[:client_id]
-      if @client_id.nil?
-        puts "TODO. Raise an exception due to missing client id"
-      end
-
       @client_secret = opts[:client_secret]
-      if @client_secret.nil?
-        puts "TODO. Raise an exception due to missing client secret"
-      end
-
       @token = opts[:token]
-      if @token.nil?
-        puts "TODO. Raise an exception due to missing token"
-      end
-
-      @user_id = opts[:user_id]
-      if @user_id.nil?
-        @user_id = "-"
-      end
+      @user_id = (opts[:user_id] || DEFAULT_USER_ID)
 
       @connection = Faraday.new("https://api.fitbit.com")
     end

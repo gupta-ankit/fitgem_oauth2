@@ -2,5 +2,7 @@
 .env
 .gemrelease
 
+.ruby-version
+
 # Ignore RubyMine files
 /.idea
