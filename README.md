@@ -13,5 +13,8 @@ Add the following line to use the fitgem_oauth2 gem
 gem 'fitgem_oauth2'
 ```
 
+# Quickstart
+If you are using fitgem_oauth2 in a Rails application, we have a sample rails application to test out the gem. It is available here https://github.com/gupta-ankit/FitgemOAuth2Rails
+
 # Special Thanks to Contributors
 * [leanlabs](https://github.com/leanlabs)
