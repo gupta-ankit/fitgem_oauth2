@@ -12,3 +12,6 @@ Add the following line to use the fitgem_oauth2 gem
 ```ruby
 gem 'fitgem_oauth2'
 ```
+
+# Special Thanks to Contributors
+* [leanlabs](https://github.com/leanlabs)
