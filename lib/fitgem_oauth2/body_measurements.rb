@@ -8,19 +8,19 @@ module FitgemOauth2
     # ======================================
 
     def fat_on_date(date)
-      get_call("/1/user/#{@user_id}/body/log/fat/date/#{format_date(date)}.json")
+      get_call("/user/#{@user_id}/body/log/fat/date/#{format_date(date)}.json")
     end
 
     def fat_for_period(base_date, period)
       if fat_period?(period)
-        get_call("1/user/#{@user_id}/body/log/fat/date/#{format_date(start_date)}/#{period}.json")
+        get_call("user/#{@user_id}/body/log/fat/date/#{format_date(start_date)}/#{period}.json")
       else
         raise FitgemOauth2::InvalidArgumentError, "period should be one of #{fat_periods}"
       end
     end
 
     def fat_for_range(start_date, end_date)
-      get_call("1/user/#{@user_id}/body/log/fat/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
+      get_call("user/#{@user_id}/body/log/fat/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
     end
 
     # ======================================
@@ -29,7 +29,7 @@ module FitgemOauth2
     
     def body_goal(type)
       if type && body_goals.include?(type)
-        get_call("1/user/#{@user_id}/body/log/#{type}/goal.json")
+        get_call("user/#{@user_id}/body/log/#{type}/goal.json")
       else
         raise FitgemOauth2::InvalidArgumentError, "goal type should be one of #{body_goals}"
       end
@@ -40,19 +40,19 @@ module FitgemOauth2
     # ======================================
 
     def weight_on_date(date)
-      get_call("/1/user/#{@user_id}/body/log/weight/date/#{format_date(date)}.json")
+      get_call("user/#{@user_id}/body/log/weight/date/#{format_date(date)}.json")
     end
 
     def weight_for_period(base_date, period)
       if weight_period?(period)
-        get_call("1/user/#{@user_id}/body/log/weight/date/#{format_date(start_date)}/#{period}.json")
+        get_call("user/#{@user_id}/body/log/weight/date/#{format_date(start_date)}/#{period}.json")
       else
         raise FitgemOauth2::InvalidArgumentError, "period should be one of #{weight_periods}"
       end
     end
 
     def weight_for_range(start_date, end_date)
-      get_call("1/user/#{@user_id}/body/log/weight/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
+      get_call("user/#{@user_id}/body/log/weight/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
     end
 
 

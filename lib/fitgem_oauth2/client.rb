@@ -19,6 +19,7 @@ module FitgemOauth2
   class Client
 
     DEFAULT_USER_ID = '-'
+    API_VERSION = '1'
 
     attr_reader :client_id
     attr_reader :client_secret
@@ -51,16 +52,19 @@ module FitgemOauth2
     end
 
     def get_call(url)
+      url = "#{API_VERSION}/#{url}"
       response = connection.get(url) { |request| set_headers(request) }
       return parse_response(response)
     end
 
     def post_call(url, params = {})
+      url = "#{API_VERSION}/#{url}"
       response = connection.post(url, params) { |request| set_headers(request) }
       return parse_response(response)
     end
 
     def delete_call(url)
+      url = "#{API_VERSION}/#{url}"
       response = connection.delete(url) { |request| set_headers(request) }
       return parse_response(response)
     end

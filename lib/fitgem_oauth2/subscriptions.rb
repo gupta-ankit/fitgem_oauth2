@@ -21,7 +21,7 @@ module FitgemOauth2
       type = opts[ :type ] || :all
       subscription_id = opts[:subscription_id]
 
-      url = [ '1', 'user', user_id ]
+      url = [ 'user', user_id ]
       url << type unless type == :all
       url << 'apiSubscriptions'
       url << subscription_id if subscription_id

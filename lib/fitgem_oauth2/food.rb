@@ -1,19 +1,19 @@
 module FitgemOauth2
   class Client
     def food_goal
-      get_call("1/user/#{@user_id}/foods/log/goal.json")
+      get_call("user/#{@user_id}/foods/log/goal.json")
     end
 
     def foods_on_date(date)
-      get_call("1/user/#{@user_id}/foods/log/date/#{format_date(date)}.json")
+      get_call("user/#{@user_id}/foods/log/date/#{format_date(date)}.json")
     end
 
     def water_on_date(date)
-      get_call("1/user/#{@user_id}/foods/log/water/date/#{format_date(date)}.json")
+      get_call("user/#{@user_id}/foods/log/water/date/#{format_date(date)}.json")
     end
 
     def water_goal
-      get_call("1/user/#{@user_id}/foods/log/water/goal.json")
+      get_call("user/#{@user_id}/foods/log/water/goal.json")
     end
 
     def food_in_period(resource, date, period)
@@ -28,7 +28,7 @@ module FitgemOauth2
         raise FitgemOauth2::InvalidArgumentError, "period should be one of #{food_periods}"
       end
 
-      get_call("1/user/[user-id]/#{resource}/date/#{format_date(date)}/#{period}.json")
+      get_call("user/[user-id]/#{resource}/date/#{format_date(date)}/#{period}.json")
 
     end
 
@@ -39,20 +39,20 @@ module FitgemOauth2
         raise FitgemOauth2::InvalidArgumentError, "resource should be one of #{food_resources}"
       end
 
-      get_call("1/user/[user-id]/#{resource}/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
+      get_call("user/[user-id]/#{resource}/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
 
     end
 
     def food(id)
-      get_call("1/foods/#{id}.json")
+      get_call("foods/#{id}.json")
     end
 
     def food_units
-      get_call("1/foods/units.json")
+      get_call("foods/units.json")
     end
 
     def food_search
-      get_call("1/foods/search.json")
+      get_call("foods/search.json")
     end
   end
 end
