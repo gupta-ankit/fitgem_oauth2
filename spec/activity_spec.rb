@@ -2,21 +2,43 @@ require 'spec_helper'
 
 describe FitgemOauth2::Client do
 
-  let( :client_id ) { '22942C' }
-  let( :client_secret ) { 'secret' }
-  let( :token ) { 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0MzAzNDM3MzUsInNjb3BlcyI6Indwcm8gd2xvYyB3bnV0IHdzbGUgd3NldCB3aHIgd3dlaSB3YWN0IHdzb2MiLCJzdWIiOiJBQkNERUYiLCJhdWQiOiJJSktMTU4iLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpYXQiOjE0MzAzNDAxMzV9.z0VHrIEzjsBnjiNMBey6wtu26yHTnSWz_qlqoEpUlpc' }
+  let(:client) { FactoryGirl.build(:client) }
+  let(:user_id) { client.user_id }
 
-  before do
-    @client = FitgemOauth2::Client.new(
-      client_id: client_id,
-      client_secret: client_secret,
-      token: token
-    )
+  let(:activities) { {} }
+
+  describe '#activities_on_date' do
+    it 'gets all activities on date' do
+      expect(client).to receive(:activities_on_date).with(Date.today).and_return(activities)
+      expect(client.activities_on_date(Date.today)).to eql(activities)
+    end
   end
 
-  describe "activities in time period" do
-    it "raises an exception if time period is not specified"
+  describe '#activities_in_period' do
+    it 'gets all activities in period' do
+      resource = 'calories'
+      period = '1d'
+      expect(client).to receive(:activities_in_period).with(resource, Date.today, period).and_return(activities)
+      expect(client.activities_in_period(resource, Date.today, period)).to eql(activities)
+    end
 
-    it "raises an exception if resource path is not specified"
+    it 'rasies exception if valid resource is not specified' do
+      resource = 'cals'
+      period = '1d'
+      expect { client.activities_in_period(resource, Date.today, period) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PATHS}")
+    end
+
+    it 'raises exception if valid period is specified' do
+      resource = 'calories'
+      period = '1day'
+      expect {client.activities_in_period(resource, Date.today, period)}.
+          to raise_error(FitgemOauth2::InvalidArgumentError, "period should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
+    end
+
+    # for this test to pass, the client should either not be a mock version;
+    # otherwise, it will throw Authorization error and check for that
+    it 'does not raise exception if all arguments are valid'
   end
+
 end

@@ -5,9 +5,9 @@ module FitgemOauth2
     #      Activities Retrieval Methods
     # ======================================
 
-    ALLOWED_ACTIVITY_PATHS = %w("calories" "caloriesBMR" "steps" "distance" "floors" "elevation" "minutesSedentary" "minutesLightlyActive" "minutesFairlyActive" "minutesVeryActive" "activityCaloriestracker/calories" "tracker/steps" "tracker/distance" "tracker/floors" "tracker/elevation" "tracker/minutesSedentary" "tracker/minutesLightlyActive" "tracker/minutesFairlyActive" "tracker/minutesVeryActive" "tracker/activityCalories")
+    ALLOWED_ACTIVITY_PATHS = %w(calories caloriesBMR steps distance floors elevation minutesSedentary minutesLightlyActive minutesFairlyActive minutesVeryActive activityCaloriestracker/calories tracker/steps tracker/distance tracker/floors tracker/elevation tracker/minutesSedentary tracker/minutesLightlyActive tracker/minutesFairlyActive tracker/minutesVeryActive tracker/activityCalories)
 
-    ALLOWED_ACTIVITY_PERIODS = %w("1d" "7d" "30d" "1w" "1m" "3m" "6m" "1y" "max")
+    ALLOWED_ACTIVITY_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
 
     def activities_on_date(date)
       get_call("user/#{user_id}/activities/date/#{format_date(date)}.json")
@@ -16,7 +16,7 @@ module FitgemOauth2
     def activities_in_period(resource_path, date, period)
       if activity_resource_path?(resource_path)
         if activity_period?(period)
-          get_activities(resource_path, resource_path, period)
+          get_activities(resource_path, format_date(date), period)
         else
           raise FitgemOauth2::InvalidArgumentError, "period should be one of #{ALLOWED_ACTIVITY_PERIODS}"
         end
@@ -27,7 +27,7 @@ module FitgemOauth2
 
     def activities_in_range(resource_path, base_date, end_date)
       if activity_resource_path?(resource_path)
-        get_activities(resource_path, format_date(base_date), format_dat(end_date))
+        get_activities(resource_path, format_date(base_date), format_date(end_date))
       else
         raise FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{ALLOWED_ACTIVITY_PATHS}"
       end
