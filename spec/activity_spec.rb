@@ -13,7 +13,8 @@ describe FitgemOauth2::Client do
   # ==============================================
   describe '#activities_on_date' do
     it 'gets all activities on date' do
-      expect(client).to receive(:activities_on_date).with(Date.today).and_return(activities)
+      url =  "user/#{user_id}/activities/date/#{client.format_date(Date.today)}.json"
+      expect(client).to receive(:get_call).with(url).and_return(activities)
       expect(client.activities_on_date(Date.today)).to eql(activities)
     end
   end
@@ -22,7 +23,8 @@ describe FitgemOauth2::Client do
     it 'gets all activities in period' do
       resource = 'calories'
       period = '1d'
-      expect(client).to receive(:activities_in_period).with(resource, Date.today, period).and_return(activities)
+      url = "user/#{user_id}/#{resource}/date/#{client.format_date(Date.today)}/#{period}.json"
+      expect(client).to receive(:get_call).with(url).and_return(activities)
       expect(client.activities_in_period(resource, Date.today, period)).to eql(activities)
     end
 
