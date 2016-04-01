@@ -1,5 +1,9 @@
 module FitgemOauth2
   class Client
+
+    FOOD_RESOURCES = %w( foods/log/caloriesIn foods/log/water )
+    FOOD_PERIODS = %w( 1d 7d 30d 1w 1m 3m 6m 1y max )
+
     def food_goal
       get_call("user/#{@user_id}/foods/log/goal.json")
     end
@@ -17,15 +21,12 @@ module FitgemOauth2
     end
 
     def food_in_period(resource, date, period)
-      food_resources = ["foods/log/caloriesIn", "foods/log/water"]
-      food_periods = %w("1d" "7d" "30d" "1w" "1m" "3m" "6m" "1y" "max")
-
-      unless resource && food_resources.include?(resource)
-        raise FitgemOauth2::InvalidArgumentError, "resource should be one of #{food_resources}"
+      unless resource && FOOD_RESOURCES.include?(resource)
+        raise FitgemOauth2::InvalidArgumentError, "resource should be one of #{FOOD_RESOURCES}"
       end
 
-      unless period && food_periods.include?(period)
-        raise FitgemOauth2::InvalidArgumentError, "period should be one of #{food_periods}"
+      unless period && FOOD_PERIODS.include?(period)
+        raise FitgemOauth2::InvalidArgumentError, "period should be one of #{FOOD_PERIODS}"
       end
 
       get_call("user/[user-id]/#{resource}/date/#{format_date(date)}/#{period}.json")
@@ -33,10 +34,8 @@ module FitgemOauth2
     end
 
     def food_in_range(resource, start_date, end_date)
-      food_resources = ["foods/log/caloriesIn", "foods/log/water"]
-
-      unless resource && food_resources.include?(resource)
-        raise FitgemOauth2::InvalidArgumentError, "resource should be one of #{food_resources}"
+      unless resource && FOOD_RESOURCES.include?(resource)
+        raise FitgemOauth2::InvalidArgumentError, "resource should be one of #{FOOD_RESOURCES}"
       end
 
       get_call("user/[user-id]/#{resource}/date/#{format_date(start_date)}/#{format_date(end_date)}.json")

@@ -1,8 +1,8 @@
 module FitgemOauth2
   class Client
-    fat_periods = %w("1d" "7d" "1w" "1m")
-    weight_periods = %("1d" "7d" "30d" "1w" "1m")
-    body_goals = %("fat" "weight")
+    FAT_PERIODS = %w(1d 7d 1w 1m)
+    WEIGHT_PERIODS = %w(1d 7d 30d 1w 1m)
+    BODY_GOALS = %w(fat weight)
     # ======================================
     #      Boday Fat API
     # ======================================
@@ -15,7 +15,7 @@ module FitgemOauth2
       if fat_period?(period)
         get_call("user/#{@user_id}/body/log/fat/date/#{format_date(start_date)}/#{period}.json")
       else
-        raise FitgemOauth2::InvalidArgumentError, "period should be one of #{fat_periods}"
+        raise FitgemOauth2::InvalidArgumentError, "period should be one of #{FAT_PERIODS}"
       end
     end
 
@@ -28,10 +28,10 @@ module FitgemOauth2
     # ======================================
     
     def body_goal(type)
-      if type && body_goals.include?(type)
+      if type && BODY_GOALS.include?(type)
         get_call("user/#{@user_id}/body/log/#{type}/goal.json")
       else
-        raise FitgemOauth2::InvalidArgumentError, "goal type should be one of #{body_goals}"
+        raise FitgemOauth2::InvalidArgumentError, "goal type should be one of #{BODY_GOALS}"
       end
     end
 
@@ -47,7 +47,7 @@ module FitgemOauth2
       if weight_period?(period)
         get_call("user/#{@user_id}/body/log/weight/date/#{format_date(start_date)}/#{period}.json")
       else
-        raise FitgemOauth2::InvalidArgumentError, "period should be one of #{weight_periods}"
+        raise FitgemOauth2::InvalidArgumentError, "period should be one of #{WEIGHT_PERIODS}"
       end
     end
 
@@ -58,11 +58,11 @@ module FitgemOauth2
 
     private
     def fat_period?(period)
-      return period && fat_periods.include?(period)
+      return period && FAT_PERIODS.include?(period)
     end
 
     def weight_period?(period)
-      return period && weight_periods.include?(period)
+      return period && WEIGHT_PERIODS.include?(period)
     end
 
   end
