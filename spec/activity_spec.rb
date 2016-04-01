@@ -7,6 +7,10 @@ describe FitgemOauth2::Client do
 
   let(:activities) { {} }
 
+
+  # ==============================================
+  #      TEST : Activities Retrieval Methods
+  # ==============================================
   describe '#activities_on_date' do
     it 'gets all activities on date' do
       expect(client).to receive(:activities_on_date).with(Date.today).and_return(activities)
@@ -22,7 +26,7 @@ describe FitgemOauth2::Client do
       expect(client.activities_in_period(resource, Date.today, period)).to eql(activities)
     end
 
-    it 'rasies exception if valid resource is not specified' do
+    it 'raises exception if valid resource is not specified' do
       resource = 'cals'
       period = '1d'
       expect { client.activities_in_period(resource, Date.today, period) }.
@@ -35,10 +39,22 @@ describe FitgemOauth2::Client do
       expect {client.activities_in_period(resource, Date.today, period)}.
           to raise_error(FitgemOauth2::InvalidArgumentError, "period should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
     end
+  end
 
-    # for this test to pass, the client should either not be a mock version;
-    # otherwise, it will throw Authorization error and check for that
-    it 'does not raise exception if all arguments are valid'
+  describe '#activities_in_range' do
+    it 'gets all activities in range'
+    it 'raises exception if resource path is not valid'
+  end
+
+  # ==============================================
+  #      TEST : Activity Logging Methods
+  # ==============================================
+  describe '#log_activity' do
+    it 'logs activity'
+  end
+
+  describe '#add_favorite_activity' do
+    it 'adds favorite activity'
   end
 
 end
