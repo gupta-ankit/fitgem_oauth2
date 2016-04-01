@@ -58,11 +58,11 @@ module FitgemOauth2
 
     private
     def fat_period?(period)
-      return period && FAT_PERIODS.include?(period)
+      period && FAT_PERIODS.include?(period)
     end
 
     def weight_period?(period)
-      return period && WEIGHT_PERIODS.include?(period)
+      period && WEIGHT_PERIODS.include?(period)
     end
 
   end

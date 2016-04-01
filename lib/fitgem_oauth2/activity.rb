@@ -42,12 +42,24 @@ module FitgemOauth2
     #      Activity Logging Methods
     # ======================================
 
+    def get_activity_list
+      get_call("user/#{@user_id}/activities/list.json")
+    end
+
+    def get_activity_tcx(id)
+      get_call("user/#{@user_id}/activities/#{id}.tcx")
+    end
+
     def log_activity(opts)
       post_call("user/#{@user_id}/activities.json", opts)
     end
 
     def add_favorite_activity(activity_id)
       post_call("user/#{@user_id}/activities/log/favorite/#{activity_id}.json")
+    end
+
+    def delete_logged_activity(id)
+      delete_call("user/#{@user_id}/activities/#{id}.json")
     end
 
 

@@ -51,12 +51,48 @@ describe FitgemOauth2::Client do
   # ==============================================
   #      TEST : Activity Logging Methods
   # ==============================================
+  describe '#get_activity_list' do
+    it 'gets activity list'
+  end
+
+  describe '#get_activity_tcx' do
+    'it gets activity tcx'
+  end
+
   describe '#log_activity' do
     it 'logs activity'
   end
 
+  describe '#delete_logged_activity' do
+    it 'should delete logged activity'
+  end
+
+  describe '#get_favorite_activity' do
+    it 'gets favorite activity'
+  end
+
   describe '#add_favorite_activity' do
     it 'adds favorite activity'
+  end
+
+  describe '#remove_favorite_activity' do
+    it 'removes favorite activity'
+  end
+
+  # ==============================================
+  #      TEST : Activity Goals
+  # ==============================================
+
+  describe '#get_activity_goals' do
+    it 'gets activity goals'
+  end
+
+  describe 'update_activity_goals' do
+    it 'updates activity goals'
+  end
+
+  describe '#lifetime_stats' do
+    it 'returns lifetime stats'
   end
 
 end
