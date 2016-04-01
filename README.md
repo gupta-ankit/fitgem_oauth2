@@ -1,4 +1,7 @@
 # fitgem_oauth2
+
+[![Build Status](https://travis-ci.org/gupta-ankit/fitgem_oauth2.svg?branch=master)](https://travis-ci.org/gupta-ankit/fitgem_oauth2)
+
 The fitgem_oauth2 gem allows developers to use the [Fitbit API](http://dev.fitbit.com/docs). Certain parts of the code,
 structure, and the API are heavily based on the [fitgem](https://github.com/whazzmaster/fitgem) gem which uses OAuth 1.0 for
 accessing the Fitbit API.
