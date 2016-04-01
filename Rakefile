@@ -1,11 +1,7 @@
-require 'rake/testtask'
+require 'bundler'
+require 'rspec/core/rake_task'
 
-task :console do
-  exec "irb -r fitgem_oauth2 -I ./lib"
-end
+Bundler::GemHelper.install_tasks
 
-Rake::TestTask.new do |t|
-  t.libs << 'test'
-end
-
-desc "Run tests"
+desc 'Default: run specs.'
+task :default => :spec
