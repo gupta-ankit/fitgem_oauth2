@@ -13,7 +13,7 @@ module FitgemOauth2
 
     def fat_for_period(base_date, period)
       if fat_period?(period)
-        get_call("user/#{@user_id}/body/log/fat/date/#{format_date(start_date)}/#{period}.json")
+        get_call("user/#{@user_id}/body/log/fat/date/#{format_date(base_date)}/#{period}.json")
       else
         raise FitgemOauth2::InvalidArgumentError, "period should be one of #{FAT_PERIODS}"
       end
@@ -45,7 +45,7 @@ module FitgemOauth2
 
     def weight_for_period(base_date, period)
       if weight_period?(period)
-        get_call("user/#{@user_id}/body/log/weight/date/#{format_date(start_date)}/#{period}.json")
+        get_call("user/#{@user_id}/body/log/weight/date/#{format_date(base_date)}/#{period}.json")
       else
         raise FitgemOauth2::InvalidArgumentError, "period should be one of #{WEIGHT_PERIODS}"
       end

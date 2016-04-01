@@ -3,11 +3,11 @@ module FitgemOauth2
 
     HR_DETAIL_LEVELS = %w(1sec 1min)
 
-    def hearrate_on_date(date)
+    def heartrate_on_date(date)
       get_call("user/#{@user_id}/activities/heart/date/#{format_date(date)}.json")
     end
 
-    def hearrate_in_period(date, period)
+    def heartrate_in_period(date, period)
       periods = %w("1d" "7d" "30d" "1w" "1m")
       unless period && periods.include?(period)
         raise InvalidArgumentError, "period should be one of #{periods}"
@@ -15,7 +15,7 @@ module FitgemOauth2
       get_call("user/#{@user_id}/activities/heart/date/#{format_date(date)}/#{period}.json")
     end
 
-    def hearrate_in_range(start_date, start_range)
+    def heartrate_in_range(start_date, end_date)
       get_call("user/#{@user_id}/activities/heart/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
     end
 
@@ -47,6 +47,5 @@ module FitgemOauth2
       end
       get_call("user/#{@user_id}/activities/heart/date/#{format_date(start_date)}/1d/#{detail_level}/time/#{start_time}/#{end_time}.json")
     end
-
   end
 end
