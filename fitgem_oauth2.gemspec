@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_runtime_dependency 'faraday', '~> 0.9'
+
   s.add_development_dependency 'rake', '~> 10.5'
   s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'factory_girl', '~> 4.5'
-  s.add_development_dependency 'dotenv', '~> 2.1'
 end
