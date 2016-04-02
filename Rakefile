@@ -11,7 +11,7 @@ task :test => :spec
 begin
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new do |tsk|
-    tsk.fail_on_error = false #do not fail the build if rubocop report 
+    tsk.fail_on_error = false #do not fail the build if rubocop report
   end
 rescue LoadError
   task :rubocop do

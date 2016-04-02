@@ -38,7 +38,7 @@ describe FitgemOauth2::Client do
     end
 
     it 'creates a subscription to a type' do
-      url = url = "user/#{user_id}/sleep/apiSubscriptions/#{subscription_id}.json"
+      url = "user/#{user_id}/sleep/apiSubscriptions/#{subscription_id}.json"
       expect(client).to receive(:post_call).with(url).and_return(subscriptions)
       expect(client.create_subscription(type: :sleep, subscription_id: subscription_id)).to eql(subscriptions)
     end

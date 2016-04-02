@@ -68,17 +68,20 @@ module FitgemOauth2
     # ======================================
 
     def intraday_time_series(opts)
-      unless opts[:resource] && [:calories, :steps, :distance, :floors, :elevation].include?(opts[:resource])
-        raise FitgemOauth2::InvalidArgumentError, 'Must specify resource to fetch intraday time series data for. One of (:calories, :steps, :distance, :floors, or :elevation) is required.'
-      end
 
-      unless opts[:date]
-        raise FitgemOauth2::InvalidArgumentError, 'Must specify the date to fetch intraday time series data for.'
-      end
+      valid_resource = opts[:resource] && [:calories, :steps, :distance, :floors, :elevation].include?(opts[:resource])
+      valid_date = opts[:date]
+      valid_detail_level = opts[:detailLevel] && %w(1min 15min).include?(opts[:detailLevel])
 
-      unless opts[:detailLevel] && %w(1min 15min).include?(opts[:detailLevel])
-        raise FitgemOauth2::InvalidArgumentError, 'Must specify the data resolution to fetch intraday time series data for. One of (\"1d\" or \"15min\") is required.'
-      end
+      raise FitgemOauth2::InvalidArgumentError,
+            'Must specify resource to fetch intraday time series data for.'\
+            ' One of (:calories, :steps, :distance, :floors, or :elevation) is required.' unless valid_resource
+
+      raise FitgemOauth2::InvalidArgumentError, 'Must specify the date to fetch intraday time series data for.' unless valid_date
+
+      raise FitgemOauth2::InvalidArgumentError,
+            'Must specify the data resolution to fetch intraday time series data for.'\
+            ' One of (\"1d\" or \"15min\") is required.' unless valid_detail_level
 
       resource = opts.delete(:resource)
       date = format_date(opts.delete(:date))
@@ -143,11 +146,11 @@ module FitgemOauth2
     end
 
     def activity_resource_path?(resource_path)
-      return resource_path && ALLOWED_ACTIVITY_PATHS.include?(resource_path)
+      resource_path && ALLOWED_ACTIVITY_PATHS.include?(resource_path)
     end
 
     def activity_period?(period)
-      return period && ALLOWED_ACTIVITY_PERIODS.include?(period)
+      period && ALLOWED_ACTIVITY_PERIODS.include?(period)
     end
   end
 end
