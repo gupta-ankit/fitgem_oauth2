@@ -86,6 +86,8 @@ module FitgemOauth2
       json_response(response)
     end
 
+    # @param refresh_token [String] The user's OAuth 1.0a access token
+    #        and access token secret concatenated with a colon.
     def refresh_access_token(refresh_token)
       response = connection.post('/oauth2/token') do |request|
         encoded = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
