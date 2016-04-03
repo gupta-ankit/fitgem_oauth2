@@ -26,7 +26,7 @@ describe FitgemOauth2::Client do
       @yesterday = client.format_date(Date.today - 1)
       @today = client.format_date(Date.today)
       @valid_period = '1m'
-      @invalid_resource_path = 'movies'
+      @invalid_resource = 'movies'
       @invalid_period = 'biweekly'
     end
 
@@ -43,7 +43,7 @@ describe FitgemOauth2::Client do
     end
 
     it 'raises exception if the resource path is invalid' do
-      expect { client.activity_time_series(@invalid_resource_path, @yesterday, @today) }.
+      expect { client.activity_time_series(@invalid_resource, @yesterday, @today) }.
           to raise_error(FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PATHS}")
     end
 
@@ -100,7 +100,7 @@ describe FitgemOauth2::Client do
       @yesterday = client.format_date(Date.today - 1)
       @today = client.format_date(Date.today)
       @valid_period = '1m'
-      @invalid_resource_path = 'movies'
+      @invalid_resource = 'movies'
       @invalid_period = 'biweekly'
       @valid_detail_level = '1min'
       @invalid_detail_level = '1sec'
@@ -139,8 +139,25 @@ describe FitgemOauth2::Client do
     end
 
 
-    it 'raises exception if resource is invalid'
-    it 'raises exception if detail_level is invalid'
+    it 'raises exception if resource is invalid' do
+      opts = {resource: @invalid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level}
+      expect { client.intraday_time_series(opts) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError, 'Must specify resource to fetch intraday time series data for.'\
+              ' One of (:calories, :steps, :distance, :floors, or :elevation) is required.')
+    end
+
+    it 'raises exception if detail_level is invalid' do
+      opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @invalid_detail_level}
+      expect { client.intraday_time_series(opts) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError, 'Must specify the data resolution to fetch intraday time series data for.'\
+              ' One of (\"1d\" or \"15min\") is required.')
+    end
+
+    it 'raises exception if start_date is not specified' do
+      opts = {resource: @valid_resource, end_date: @today, detail_level: @invalid_detail_level}
+      expect { client.intraday_time_series(opts) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError, 'Must specify the start_date to fetch intraday time series data')
+    end
   end
 
   # ==============================================

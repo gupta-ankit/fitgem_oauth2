@@ -70,7 +70,7 @@ module FitgemOauth2
 
       unless start_date
         raise FitgemOauth2::InvalidArgumentError,
-              'Must specify the date to fetch intraday time series data for.'
+              'Must specify the start_date to fetch intraday time series data'
       end
 
       end_date ||= '1d'
