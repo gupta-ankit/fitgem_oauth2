@@ -58,6 +58,10 @@ module FitgemOauth2
       post_call("user/#{@user_id}/activities/log/favorite/#{activity_id}.json")
     end
 
+    def remove_favorite_activity(activity_id)
+      delete_call("user/#{@user_id}/activities/log/favorite/#{activity_id}.json")
+    end
+
     def delete_logged_activity(id)
       delete_call("user/#{@user_id}/activities/#{id}.json")
     end
@@ -125,9 +129,17 @@ module FitgemOauth2
     # ======================================
 
     def goals(period)
-      unless period && [:daily, :weekly].include?(period)
+      unless period && %w(daily weekly).include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
       end
+      get_call("user/#{@user_id}/activities/goals/#{period}.json")
+    end
+
+    def update_activity_goals(period, params)
+      unless period && %w(daily weekly).include?(period)
+        raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
+      end
+      post_call("user/#{@user_id}/activities/goals/#{period}.json", params)
     end
 
     def lifetime_stats
