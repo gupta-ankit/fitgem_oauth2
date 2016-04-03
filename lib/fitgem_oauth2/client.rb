@@ -37,36 +37,36 @@ module FitgemOauth2
       @token = opts[:token]
       @user_id = (opts[:user_id] || DEFAULT_USER_ID)
 
-      @connection = Faraday.new("https://api.fitbit.com")
+      @connection = Faraday.new('https://api.fitbit.com')
     end
 
     def refresh_access_token(refresh_token)
       response = connection.post('/oauth2/token') do |request|
         encoded = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
         request.headers['Authorization'] = "Basic #{encoded}"
-        request.headers['Content-Type'] = "application/x-www-form-urlencoded"
-        request.params['grant_type'] = "refresh_token"
+        request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        request.params['grant_type'] = 'refresh_token'
         request.params['refresh_token'] = refresh_token
       end
-      return JSON.parse(response.body)
+      JSON.parse(response.body)
     end
 
     def get_call(url)
       url = "#{API_VERSION}/#{url}"
       response = connection.get(url) { |request| set_headers(request) }
-      return parse_response(response)
+      parse_response(response)
     end
 
     def post_call(url, params = {})
       url = "#{API_VERSION}/#{url}"
       response = connection.post(url, params) { |request| set_headers(request) }
-      return parse_response(response)
+      parse_response(response)
     end
 
     def delete_call(url)
       url = "#{API_VERSION}/#{url}"
       response = connection.delete(url) { |request| set_headers(request) }
-      return parse_response(response)
+      parse_response(response)
     end
 
     private
@@ -74,21 +74,27 @@ module FitgemOauth2
 
     def set_headers(request)
       request.headers['Authorization'] = "Bearer #{token}"
-      request.headers['Content-Type'] = "application/x-www-form-urlencoded"
+      request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     end
 
     def parse_response(response)
-      headers_to_keep = ["fitbit-rate-limit-limit","fitbit-rate-limit-remaining","fitbit-rate-limit-reset"]
+      headers_to_keep = %w(fitbit-rate-limit-limit fitbit-rate-limit-remaining fitbit-rate-limit-reset)
 
-      case response.status
-        when 200; return JSON.parse(response.body).merge!(response.headers.slice(*headers_to_keep))
-        when 400; raise FitgemOauth2::BadRequestError
-        when 401; raise FitgemOauth2::UnauthorizedError
-        when 403; raise FitgemOauth2::ForbiddenError
-        when 404; raise FitgemOauth2::NotFoundError
-        when 500..599; raise FitgemOauth2::ServerError
+      error_handler = {
+          200 => lambda { JSON.parse(response.body).merge!(response.headers.slice(*headers_to_keep)) },
+          400 => lambda { raise FitgemOauth2::BadRequestError },
+          401 => lambda { raise FitgemOauth2::UnauthorizedError },
+          403 => lambda { raise FitgemOauth2::ForbiddenError },
+          404 => lambda { raise FitgemOauth2::NotFoundError },
+          500..599 => lambda { raise FitgemOauth2::ServerError }
+      }
+
+      fn = error_handler.detect { |k , _| k === response.status }
+      if fn === nil
+        raise StandardError, "Unexpected response status #{response.status}"
+      else
+        fn.last.call
       end
     end
-
   end
 end

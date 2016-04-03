@@ -67,36 +67,34 @@ module FitgemOauth2
     #      Intraday Series
     # ======================================
 
-    def intraday_time_series(opts)
+    def intraday_time_series(resource: nil, date: nil, detail_level: nil,
+                             start_time: nil, end_time: nil)
 
-      valid_resource = opts[:resource] && [:calories, :steps, :distance, :floors, :elevation].include?(opts[:resource])
-      valid_date = opts[:date]
-      valid_detail_level = opts[:detailLevel] && %w(1min 15min).include?(opts[:detailLevel])
-
-      raise FitgemOauth2::InvalidArgumentError,
-            'Must specify resource to fetch intraday time series data for.'\
-            ' One of (:calories, :steps, :distance, :floors, or :elevation) is required.' unless valid_resource
-
-      raise FitgemOauth2::InvalidArgumentError, 'Must specify the date to fetch intraday time series data for.' unless valid_date
-
-      raise FitgemOauth2::InvalidArgumentError,
-            'Must specify the data resolution to fetch intraday time series data for.'\
-            ' One of (\"1d\" or \"15min\") is required.' unless valid_detail_level
-
-      resource = opts.delete(:resource)
-      date = format_date(opts.delete(:date))
-      detail_level = opts.delete(:detailLevel)
-      time_window_specified = opts[:startTime] || opts[:endTime]
-      resource_path = "user/#{@user_id}/activities/"
-
-      if time_window_specified
-        start_time = format_time(opts.delete(:startTime))
-        end_time = format_time(opts.delete(:endTime))
-        resource_path += "#{resource}/date/#{date}/1d/#{detail_level}/time/#{start_time}/#{end_time}.json"
-      else
-        resource_path += "#{resource}/date/#{date}/1d/#{detail_level}.json"
+      unless %i[calories steps distance floors elevation].include?(resource)
+        raise FitgemOauth2::InvalidArgumentError,
+              'Must specify resource to fetch intraday time series data for.'\
+              ' One of (:calories, :steps, :distance, :floors, or :elevation) is required.'
       end
-      get_call(resource_path)
+      unless date
+        raise FitgemOauth2::InvalidArgumentError,
+              'Must specify the date to fetch intraday time series data for.'
+      end
+      unless %w(1min 15min).include?(detail_level)
+        raise FitgemOauth2::InvalidArgumentError,
+              'Must specify the data resolution to fetch intraday time series data for.'\
+              ' One of (\"1d\" or \"15min\") is required.'
+      end
+      resource_path = [
+          'user', @user_id,
+          'activities', resource,
+          'date', format_date(date),
+          '1d', detail_level
+      ].join('/')
+      if start_time || end_time
+        resource_path =
+            [resource_path, 'time', format_time(start_time), format_time(end_time)].join('/')
+      end
+      get_call("#{resource_path}.json")
     end
 
     # ======================================

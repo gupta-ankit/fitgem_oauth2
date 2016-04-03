@@ -13,7 +13,7 @@ describe FitgemOauth2::Client do
   # ==============================================
   describe '#activities_on_date' do
     it 'gets all activities on date' do
-      url =  "user/#{user_id}/activities/date/#{client.format_date(Date.today)}.json"
+      url = "user/#{user_id}/activities/date/#{client.format_date(Date.today)}.json"
       expect(client).to receive(:get_call).with(url).and_return(activities)
       expect(client.activities_on_date(Date.today)).to eql(activities)
     end
@@ -38,14 +38,24 @@ describe FitgemOauth2::Client do
     it 'raises exception if valid period is specified' do
       resource = 'calories'
       period = '1day'
-      expect {client.activities_in_period(resource, Date.today, period)}.
+      expect { client.activities_in_period(resource, Date.today, period) }.
           to raise_error(FitgemOauth2::InvalidArgumentError, "period should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
     end
   end
 
   describe '#activities_in_range' do
-    it 'gets all activities in range'
-    it 'raises exception if resource path is not valid'
+    it 'gets all activities in range' do
+      resource = 'calories'
+      url = "user/#{user_id}/#{resource}/date/#{client.format_date(Date.today - 1)}/#{client.format_date(Date.today)}.json"
+      expect(client).to receive(:get_call).with(url).and_return(activities)
+      expect(client.activities_in_range(resource, Date.today - 1, Date.today)).to eql(activities)
+    end
+
+    it 'raises exception if resource path is not valid' do
+      resource = 'cals'
+      expect {client.activities_in_range(resource, Date.today-1, Date.today)}.
+          to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
   end
 
   # ==============================================
