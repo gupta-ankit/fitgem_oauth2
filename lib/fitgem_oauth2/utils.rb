@@ -15,6 +15,16 @@ module FitgemOauth2
       end
     end
 
+    def format_time(time)
+      if ( (time =~ /\d{2}:\d{2}/) == 0)
+        time
+      elsif DateTime === time || Time === time
+        time.strftime('%H:%M')
+      else
+        raise FitgemOauth2::InvalidTimeArgument, "Time used must be a DateTime/Time object or a string in the format hh:mm; supplied argument is a #{time.class}"
+      end
+    end
+
     private
     def date_from_semantic(semantic)
       if semantic === 'yesterday'

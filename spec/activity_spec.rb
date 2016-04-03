@@ -11,11 +11,46 @@ describe FitgemOauth2::Client do
   # ==============================================
   #      TEST : Activities Retrieval Methods
   # ==============================================
-  describe '#activities_on_date' do
-    it 'gets all activities on date' do
+  describe '#daily_activity_summary' do
+    it 'gets daily activity summary date' do
       url = "user/#{user_id}/activities/date/#{client.format_date(Date.today)}.json"
       expect(client).to receive(:get_call).with(url).and_return(activities)
-      expect(client.activities_on_date(Date.today)).to eql(activities)
+      expect(client.daily_activity_summary(Date.today)).to eql(activities)
+    end
+  end
+
+  describe '#activity_time_series' do
+    before(:each) do
+      @resp = random_sequence
+      @valid_resource = 'calories'
+      @yesterday = client.format_date(Date.today - 1)
+      @today = client.format_date(Date.today)
+      @valid_period = '1m'
+      @invalid_resource_path = 'movies'
+      @invalid_period = 'biweekly'
+    end
+
+    it 'gets activity time series for start and end date' do
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@today}.json").
+          and_return(@resp)
+      expect(client.activity_time_series(@valid_resource, @yesterday, @today)).to eql(@resp)
+    end
+
+    it 'gets activity time series for base date and period' do
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@valid_period}.json").
+          and_return(@resp)
+      expect(client.activity_time_series(@valid_resource, @yesterday, @valid_period)).to eql(@resp)
+    end
+
+    it 'raises exception if the resource path is invalid' do
+      expect { client.activity_time_series(@invalid_resource_path, @yesterday, @today) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PATHS}")
+    end
+
+    it 'raises exception if period is invalid' do
+      expect { client.activity_time_series(@valid_resource, @yesterday, @invalid_period) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError,
+                         "#{@invalid_period} is neither a valid date nor a valid period. If you want to specify period, please use on of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
     end
   end
 
@@ -23,7 +58,7 @@ describe FitgemOauth2::Client do
     it 'gets all activities in period' do
       resource = 'calories'
       period = '1d'
-      url = "user/#{user_id}/#{resource}/date/#{client.format_date(Date.today)}/#{period}.json"
+      url = "user/#{user_id}/activities/#{resource}/date/#{client.format_date(Date.today)}/#{period}.json"
       expect(client).to receive(:get_call).with(url).and_return(activities)
       expect(client.activities_in_period(resource, Date.today, period)).to eql(activities)
     end
@@ -46,7 +81,7 @@ describe FitgemOauth2::Client do
   describe '#activities_in_range' do
     it 'gets all activities in range' do
       resource = 'calories'
-      url = "user/#{user_id}/#{resource}/date/#{client.format_date(Date.today - 1)}/#{client.format_date(Date.today)}.json"
+      url = "user/#{user_id}/activities/#{resource}/date/#{client.format_date(Date.today - 1)}/#{client.format_date(Date.today)}.json"
       expect(client).to receive(:get_call).with(url).and_return(activities)
       expect(client.activities_in_range(resource, Date.today - 1, Date.today)).to eql(activities)
     end
@@ -58,26 +93,59 @@ describe FitgemOauth2::Client do
     end
   end
 
+  describe '#intraday_time_series' do
+    before(:each) do
+      @resp = random_sequence
+      @valid_resource = 'calories'
+      @yesterday = client.format_date(Date.today - 1)
+      @today = client.format_date(Date.today)
+      @valid_period = '1m'
+      @invalid_resource_path = 'movies'
+      @invalid_period = 'biweekly'
+      @valid_detail_level = '1min'
+      @invalid_detail_level = '1sec'
+      @start_time = '12:30'
+      @end_time = '12:45'
+    end
+
+    describe 'returns intraday time series for valid url: ' do
+      it 'format #1' do
+        url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@today}/#{@valid_detail_level}.json"
+        opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level}
+        expect(client).to receive(:get_call).with(url).and_return(@resp)
+        expect(client.intraday_time_series(opts)).to eql(@resp)
+      end
+
+      it 'format #2' do
+        url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/1d/#{@valid_detail_level}.json"
+        opts = {resource: @valid_resource, start_date: @yesterday, detail_level: @valid_detail_level}
+        expect(client).to receive(:get_call).with(url).and_return(@resp)
+        expect(client.intraday_time_series(opts)).to eql(@resp)
+      end
+
+      it 'format #3' do
+        url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@today}/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
+        opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
+        expect(client).to receive(:get_call).with(url).and_return(@resp)
+        expect(client.intraday_time_series(opts)).to eql(@resp)
+      end
+
+      it 'format #4' do
+        url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@today}/1d/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
+        opts= {resource: @valid_resource, start_date: @today, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
+        expect(client).to receive(:get_call).with(url).and_return(@resp)
+        expect(client.intraday_time_series(opts)).to eql(@resp)
+      end
+    end
+
+
+    it 'raises exception if resource is invalid'
+    it 'raises exception if detail_level is invalid'
+  end
+
   # ==============================================
   #      TEST : Activity Logging Methods
   # ==============================================
-  describe '#get_activity_list' do
-    it 'gets activity list' do
-      activity_list = {activity_list: 'testing'}
-      expect(client).to receive(:get_call).with("user/#{user_id}/activities/list.json").and_return(activity_list)
-      expect(client.get_activity_list).to eql(activity_list)
-    end
-  end
-
-  describe '#get_activity_tcx' do
-    it 'gets activity tcx' do
-      activity_list = {activity_list: 'testing'}
-      id = 1
-      expect(client).to receive(:get_call).with("user/#{user_id}/activities/#{id}.tcx").and_return(activity_list)
-      expect(client.get_activity_tcx(id)).to eql(activity_list)
-    end
-  end
-
   describe '#log_activity' do
     it 'logs activity' do
       ret_activity = '{}'
@@ -95,6 +163,56 @@ describe FitgemOauth2::Client do
       url = "user/#{user_id}/activities/#{id}.json"
       expect(client).to receive(:delete_call).with(url).and_return(ret)
       expect(client.delete_logged_activity(id)).to eql(ret)
+    end
+  end
+
+  describe '#get_activity_list' do
+    it 'gets activity list' do
+      activity_list = {activity_list: 'testing'}
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/list.json").and_return(activity_list)
+      expect(client.get_activity_list).to eql(activity_list)
+    end
+  end
+
+  describe '#get_activity_tcx' do
+    it 'gets activity tcx' do
+      activity_list = {activity_list: 'testing'}
+      id = 1
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/#{id}.tcx").and_return(activity_list)
+      expect(client.get_activity_tcx(id)).to eql(activity_list)
+    end
+  end
+
+  describe '#acivities' do
+    it 'gets all activities' do
+      response = random_sequence
+      expect(client).to receive(:get_call).with('activities.json').and_return(response)
+      expect(client.activities).to eql(response)
+    end
+  end
+
+  describe '#activity' do
+    it 'gets a particular activity' do
+      id = random_sequence
+      response = random_sequence
+      expect(client).to receive(:get_call).with("activities/#{id}.json").and_return(response)
+      expect(client.activity(id)).to eql(response)
+    end
+  end
+
+  describe '#frequent_activities' do
+    it 'returns frequent activities' do
+      response = random_sequence
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/frequent.json").and_return(response)
+      expect(client.frequent_activities).to eql(response)
+    end
+  end
+
+  describe '#recent_activities' do
+    it 'returns recent activities' do
+      response = random_sequence
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/recent.json").and_return(response)
+      expect(client.recent_activities).to eql(response)
     end
   end
 
