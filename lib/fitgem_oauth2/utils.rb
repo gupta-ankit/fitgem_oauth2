@@ -2,6 +2,11 @@ module FitgemOauth2
   class Client
 
     def format_date(date)
+
+      if !date
+        return nil
+      end
+
       valid_semantic_date = %w(today yesterday).include? date
       valid_date_string = ((date =~ /\d{4}\-\d{2}\-\d{2}/) == 0)
       if valid_date_string

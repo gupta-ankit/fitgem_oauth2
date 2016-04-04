@@ -30,24 +30,12 @@ module FitgemOauth2
       end
     end
 
-    # <b>DEPRECATED:</b> Please use <tt>activity_time_series</tt> instead.
-    def activities_in_period(resource_path, date, period)
-      warn '[DEPRECATION] `activities_in_period` is deprecated.  Please use `activity_time_series` instead.'
-      activity_time_series(resource_path, date, period)
-    end
-
-    # <b>DEPRECATED:</b> Please use <tt>activity_time_series</tt> instead.
-    def activities_in_range(resource_path, base_date, end_date)
-      warn '[DEPRECATION] `activities_in_range` is deprecated.  Please use `activity_time_series` instead.'
-      activity_time_series(resource_path, base_date, end_date)
-    end
-
     # ======================================
     #      Intraday Series
     # ======================================
 
-    def intraday_time_series(resource: nil, start_date: nil, end_date: nil, detail_level: nil,
-                             start_time: nil, end_time: nil)
+    def intraday_activity_time_series(resource: nil, start_date: nil, end_date: nil, detail_level: nil,
+                                      start_time: nil, end_time: nil)
 
       # converting to symbol to allow developer to use either 'calories' or :calories
       resource = resource.to_sym
