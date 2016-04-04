@@ -5,19 +5,19 @@ module FitgemOauth2
     FOOD_PERIODS = %w( 1d 7d 30d 1w 1m 3m 6m 1y max )
 
     def food_goal
-      get_call("user/#{@user_id}/foods/log/goal.json")
+      get_call("user/#{user_id}/foods/log/goal.json")
     end
 
     def foods_on_date(date)
-      get_call("user/#{@user_id}/foods/log/date/#{format_date(date)}.json")
+      get_call("user/#{user_id}/foods/log/date/#{format_date(date)}.json")
     end
 
     def water_on_date(date)
-      get_call("user/#{@user_id}/foods/log/water/date/#{format_date(date)}.json")
+      get_call("user/#{user_id}/foods/log/water/date/#{format_date(date)}.json")
     end
 
     def water_goal
-      get_call("user/#{@user_id}/foods/log/water/goal.json")
+      get_call("user/#{user_id}/foods/log/water/goal.json")
     end
 
     def food_in_period(resource, date, period)

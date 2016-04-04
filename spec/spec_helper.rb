@@ -13,3 +13,7 @@ FactoryGirl.find_definitions
 RSpec.configure do |config|
   # some (optional) config here
 end
+
+def random_sequence
+  (0...8).map { (65 + rand(26)).chr }.join
+end

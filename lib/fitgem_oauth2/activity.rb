@@ -100,27 +100,27 @@ module FitgemOauth2
     # ======================================
 
     def log_activity(params)
-      post_call("user/#{@user_id}/activities.json", params)
+      post_call("user/#{user_id}/activities.json", params)
     end
 
     def delete_logged_activity(id)
-      delete_call("user/#{@user_id}/activities/#{id}.json")
+      delete_call("user/#{user_id}/activities/#{id}.json")
     end
 
     def get_activity_list
-      get_call("user/#{@user_id}/activities/list.json")
+      get_call("user/#{user_id}/activities/list.json")
     end
 
     def get_activity_tcx(id)
-      get_call("user/#{@user_id}/activities/#{id}.tcx")
+      get_call("user/#{user_id}/activities/#{id}.tcx")
     end
 
     def add_favorite_activity(activity_id)
-      post_call("user/#{@user_id}/activities/log/favorite/#{activity_id}.json")
+      post_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
     end
 
     def remove_favorite_activity(activity_id)
-      delete_call("user/#{@user_id}/activities/log/favorite/#{activity_id}.json")
+      delete_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
     end
 
     # ======================================
@@ -135,15 +135,15 @@ module FitgemOauth2
     end
 
     def frequent_activities
-      get_call("user/#{@user_id}/activities/frequent.json")
+      get_call("user/#{user_id}/activities/frequent.json")
     end
 
     def recent_activities
-      get_call("user/#{@user_id}/activities/recent.json")
+      get_call("user/#{user_id}/activities/recent.json")
     end
 
     def favorite_activities
-      get_call("user/#{@user_id}/activities/favorite.json")
+      get_call("user/#{user_id}/activities/favorite.json")
     end
 
     # ======================================
@@ -154,18 +154,18 @@ module FitgemOauth2
       unless period && %w(daily weekly).include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
       end
-      get_call("user/#{@user_id}/activities/goals/#{period}.json")
+      get_call("user/#{user_id}/activities/goals/#{period}.json")
     end
 
     def update_activity_goals(period, params)
       unless period && %w(daily weekly).include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
       end
-      post_call("user/#{@user_id}/activities/goals/#{period}.json", params)
+      post_call("user/#{user_id}/activities/goals/#{period}.json", params)
     end
 
     def lifetime_stats
-      get_call("user/#{@user_id}/activities.json")
+      get_call("user/#{user_id}/activities.json")
     end
 
     # ======================================

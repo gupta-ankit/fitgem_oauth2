@@ -302,9 +302,4 @@ describe FitgemOauth2::Client do
       expect(client.lifetime_stats).to eql(life_stats)
     end
   end
-
-  def random_sequence
-    (0...8).map { (65 + rand(26)).chr }.join
-  end
-
 end
