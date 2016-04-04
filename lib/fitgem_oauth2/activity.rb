@@ -24,7 +24,7 @@ module FitgemOauth2
           second = format_date(end_date_or_period)
         rescue FitgemOauth2::InvalidDateArgument
           raise FitgemOauth2::InvalidArgumentError,
-                "#{end_date_or_period} is neither a valid date nor a valid period. If you want to specify period, please use on of #{ALLOWED_ACTIVITY_PERIODS}"
+                "#{end_date_or_period} is neither a valid date nor a valid period. If you want to specify period, please use one of #{ALLOWED_ACTIVITY_PERIODS}"
         end
         get_activities(resource_path, format_date(start_date), second)
       end
@@ -33,23 +33,13 @@ module FitgemOauth2
     # <b>DEPRECATED:</b> Please use <tt>activity_time_series</tt> instead.
     def activities_in_period(resource_path, date, period)
       warn '[DEPRECATION] `activities_in_period` is deprecated.  Please use `activity_time_series` instead.'
-      if activity_resource_path?(resource_path)
-        if activity_period?(period)
-          get_activities(resource_path, format_date(date), period)
-        else
-          raise FitgemOauth2::InvalidArgumentError, "period should be one of #{ALLOWED_ACTIVITY_PERIODS}"
-        end
-      else
-        raise FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{ALLOWED_ACTIVITY_PATHS}"
-      end
+      activity_time_series(resource_path, date, period)
     end
 
+    # <b>DEPRECATED:</b> Please use <tt>activity_time_series</tt> instead.
     def activities_in_range(resource_path, base_date, end_date)
-      if activity_resource_path?(resource_path)
-        get_activities(resource_path, format_date(base_date), format_date(end_date))
-      else
-        raise FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{ALLOWED_ACTIVITY_PATHS}"
-      end
+      warn '[DEPRECATION] `activities_in_range` is deprecated.  Please use `activity_time_series` instead.'
+      activity_time_series(resource_path, base_date, end_date)
     end
 
     # ======================================

@@ -50,7 +50,7 @@ describe FitgemOauth2::Client do
     it 'raises exception if period is invalid' do
       expect { client.activity_time_series(@valid_resource, @yesterday, @invalid_period) }.
           to raise_error(FitgemOauth2::InvalidArgumentError,
-                         "#{@invalid_period} is neither a valid date nor a valid period. If you want to specify period, please use on of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
+                         "#{@invalid_period} is neither a valid date nor a valid period. If you want to specify period, please use one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
     end
   end
 
@@ -74,7 +74,8 @@ describe FitgemOauth2::Client do
       resource = 'calories'
       period = '1day'
       expect { client.activities_in_period(resource, Date.today, period) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, "period should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
+          to raise_error(FitgemOauth2::InvalidArgumentError,
+                         "#{period} is neither a valid date nor a valid period. If you want to specify period, please use one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
     end
   end
 
