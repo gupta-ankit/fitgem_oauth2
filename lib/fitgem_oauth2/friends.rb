@@ -12,6 +12,14 @@ module FitgemOauth2
       get_call("user/#{user_id}/friends/invitations.json")
     end
 
+    def invite_friend(params)
+      post_call("user/#{user_id}/friends/invitations.json", params)
+    end
+
+    def respond_to_invitation(from_user_id, params)
+      post_call("user/#{user_id}/friends/invitations/#{from_user_id}.json", params)
+    end
+
     def badges
       get_call("user/#{user_id}/badges.json")
     end
