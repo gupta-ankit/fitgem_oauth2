@@ -3,10 +3,10 @@ module FitgemOauth2
     FAT_PERIODS = %w(1d 7d 1w 1m)
     WEIGHT_PERIODS = %w(1d 7d 30d 1w 1m)
     BODY_GOALS = %w(fat weight)
-
     BODY_TIME_SERIES_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
+
     # ======================================
-    #      Boday Fat API
+    #      Boday Fat
     # ======================================
 
     def body_fat_logs(start_date: nil, end_date: nil, period: nil)
@@ -31,21 +31,6 @@ module FitgemOauth2
       get_call(url)
     end
 
-    def fat_on_date(date)
-      warn '`fat_on_date` is deprecated. Use `body_fat_logs` instead'
-      body_fat_logs(start_date: date)
-    end
-
-    def fat_for_period(base_date, period)
-      warn '`fat_for_period` is deprecated. Use `body_fat_logs` instead'
-      body_fat_logs(start_date: base_date, period: period)
-    end
-
-    def fat_for_range(start_date, end_date)
-      warn '`fat_for_range` is deprecated. Use `body_fat_logs` instead'
-      body_fat_logs(start_date: start_date, end_date: end_date)
-    end
-
     def log_body_fat(params)
       post_call("user/#{user_id}/body/log/fat.json", params)
     end
@@ -53,6 +38,11 @@ module FitgemOauth2
     def delete_logged_body_fat(id)
       delete_call("user/#{user_id}/body/log/fat/#{id}.json")
     end
+
+
+    # ==================================
+    #   Body Time Series
+    # ==================================
 
     def body_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
       unless resource && start_date
@@ -84,16 +74,8 @@ module FitgemOauth2
     end
 
 
-    def log_weight(params)
-      post_call("user/#{user_id}/body/log/weight.json", params)
-    end
-
-    def delete_logged_weight(id)
-      delete_call("user/#{user_id}/body/log/weight/#{id}.json")
-    end
-
     # ======================================
-    #      Body Goals API
+    #      Body Goals
     # ======================================
 
     def body_goals(type)
@@ -113,7 +95,7 @@ module FitgemOauth2
     end
 
     # ======================================
-    #      Body Weight API
+    #      Body Weight
     # ======================================
 
     def weight_logs(start_date: nil, end_date: nil, period: nil)
@@ -141,30 +123,13 @@ module FitgemOauth2
       get_call(url + '.json')
     end
 
-    def weight_on_date(date)
-      get_call("user/#{user_id}/body/log/weight/date/#{format_date(date)}.json")
+
+    def log_weight(params)
+      post_call("user/#{user_id}/body/log/weight.json", params)
     end
 
-    def weight_for_period(base_date, period)
-      if weight_period?(period)
-        get_call("user/#{user_id}/body/log/weight/date/#{format_date(base_date)}/#{period}.json")
-      else
-        raise FitgemOauth2::InvalidArgumentError, "period should be one of #{WEIGHT_PERIODS}"
-      end
-    end
-
-    def weight_for_range(start_date, end_date)
-      get_call("user/#{user_id}/body/log/weight/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
-    end
-
-
-    private
-    def fat_period?(period)
-      period && FAT_PERIODS.include?(period)
-    end
-
-    def weight_period?(period)
-      period && WEIGHT_PERIODS.include?(period)
+    def delete_logged_weight(id)
+      delete_call("user/#{user_id}/body/log/weight/#{id}.json")
     end
 
   end

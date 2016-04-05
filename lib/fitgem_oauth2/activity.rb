@@ -1,10 +1,6 @@
 module FitgemOauth2
   class Client
 
-    # ======================================
-    #      Activities Retrieval Methods
-    # ======================================
-
     ACTIVITY_RESOURCES = %w(calories caloriesBMR steps distance floors elevation minutesSedentary minutesLightlyActive minutesFairlyActive minutesVeryActive activityCaloriestracker/calories tracker/steps tracker/distance tracker/floors tracker/elevation tracker/minutesSedentary tracker/minutesLightlyActive tracker/minutesFairlyActive tracker/minutesVeryActive tracker/activityCalories)
 
     ACTIVITY_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
@@ -12,6 +8,10 @@ module FitgemOauth2
     def daily_activity_summary(date)
       get_call("user/#{user_id}/activities/date/#{format_date(date)}.json")
     end
+
+    # ==================================
+    #   Activity Time Series
+    # ==================================
 
     def activity_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
 
@@ -37,9 +37,7 @@ module FitgemOauth2
       get_call(url + '.json')
     end
 
-    # ======================================
-    #      Intraday Series
-    # ======================================
+
 
     def intraday_activity_time_series(resource: nil, start_date: nil, end_date: nil, detail_level: nil,
                                       start_time: nil, end_time: nil)
@@ -100,13 +98,6 @@ module FitgemOauth2
       get_call("user/#{user_id}/activities/#{id}.tcx")
     end
 
-    def add_favorite_activity(activity_id)
-      post_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
-    end
-
-    def remove_favorite_activity(activity_id)
-      delete_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
-    end
 
     # ======================================
     #      Activity Types
@@ -129,6 +120,14 @@ module FitgemOauth2
 
     def favorite_activities
       get_call("user/#{user_id}/activities/favorite.json")
+    end
+
+    def add_favorite_activity(activity_id)
+      post_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
+    end
+
+    def remove_favorite_activity(activity_id)
+      delete_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
     end
 
     # ======================================

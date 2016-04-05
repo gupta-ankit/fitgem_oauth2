@@ -15,9 +15,9 @@ describe FitgemOauth2::Client do
     end
   end
 
-  describe '#sleep_on_date' do
+  describe '#sleep_logs' do
     it 'gets sleep on date' do
-      get_test("user/#{user_id}/sleep/date/#{client.format_date(Date.today)}.json", 'sleep_on_date', Date.today)
+      get_test("user/#{user_id}/sleep/date/#{client.format_date(Date.today)}.json", 'sleep_logs', Date.today)
     end
   end
 

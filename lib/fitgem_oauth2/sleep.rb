@@ -5,7 +5,7 @@ module FitgemOauth2
     SLEEP_RESOURCES = %w(startTime  timeInBed  minutesAsleep  awakeningsCount  minutesAwake  minutesToFallAsleep  minutesAfterWakeup  efficiency)
     SLEEP_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
 
-    def sleep_on_date(date)
+    def sleep_logs(date)
       get_call("user/#{user_id}/sleep/date/#{format_date(date)}.json")
     end
 
@@ -33,7 +33,6 @@ module FitgemOauth2
       if period && !SLEEP_PERIODS.include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Valid periods are #{SLEEP_PERIODS}."
       end
-
 
       second = period || format_date(end_date)
 
