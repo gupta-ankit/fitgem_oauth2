@@ -5,6 +5,8 @@ module FitgemOauth2
 
     ACTIVITY_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
 
+    # retrieves daily activity summary for a date
+    # @param date the date for which the summary is retrieved
     def daily_activity_summary(date)
       get_call("user/#{user_id}/activities/date/#{format_date(date)}.json")
     end
@@ -13,6 +15,12 @@ module FitgemOauth2
     #   Activity Time Series
     # ==================================
 
+    # retrieves activity time series, based on the arguments provided
+    # @param resource the resource for which the series needs to be retrieved. one of ALLOWED_RESOURCES
+    # @param start_date the start date for the series
+    # @param end_date the end date for the series. If specifying end_date, do not specify period
+    # @param period the period starting from start_date for which the series needs to be retrieved. If specifying period,
+    #             do not use end_date
     def activity_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
 
       unless resource && ACTIVITY_RESOURCES.include?(resource)
@@ -37,8 +45,13 @@ module FitgemOauth2
       get_call(url + '.json')
     end
 
-
-
+    # retrieves intraday activity time series.
+    # @param resource (required) for which the intrady series is retrieved. one of 'calories', 'steps', 'distance', 'floors', 'elevation'
+    # @param start_date (required) start date for the series
+    # @param end_date (optional) end date for the series, if not specified, the series is for 1 day
+    # @param detail_level (required) level of detail for the series
+    # @param start_time (optional)start time for the series
+    # @param end_time the (optional)end time for the series. specify both start_time and end_time, if using either
     def intraday_activity_time_series(resource: nil, start_date: nil, end_date: nil, detail_level: nil,
                                       start_time: nil, end_time: nil)
 
@@ -82,18 +95,25 @@ module FitgemOauth2
     #      Activity Logging Methods
     # ======================================
 
+    # logs activity using the params.
+    # @param params Hash to be posted. Refer https://dev.fitbit.com/docs/activity/#activity-logging for accepted
+    #     POST parameters
     def log_activity(params)
       post_call("user/#{user_id}/activities.json", params)
     end
 
+    # deletes a logged activity
+    # @param id id of the activity log to be deleted
     def delete_logged_activity(id)
       delete_call("user/#{user_id}/activities/#{id}.json")
     end
 
+    # retrieves activity list for the user
     def activity_list
       get_call("user/#{user_id}/activities/list.json")
     end
 
+    # retrieves activity list in the tcx format
     def activity_tcx(id)
       get_call("user/#{user_id}/activities/#{id}.tcx")
     end
@@ -102,30 +122,43 @@ module FitgemOauth2
     # ======================================
     #      Activity Types
     # ======================================
+
+    # Get a tree of all valid Fitbit public activities from the activities catalog as well
+    # as private custom activities the user created in the format requested. If the activity
+    # has levels, also get a list of activity level details
     def activities
-      get_call("activities.json")
+      get_call('activities.json')
     end
 
+    # Returns the details of a specific activity in the Fitbit activities database in the format requested.
+    # @param id id of the activity for which the details need to be retrieved
     def activity(id)
       get_call("activities/#{id}.json")
     end
 
+    # gets frequent activities
     def frequent_activities
       get_call("user/#{user_id}/activities/frequent.json")
     end
 
+    # gets recent activities
     def recent_activities
       get_call("user/#{user_id}/activities/recent.json")
     end
 
+    # gets favorite activities
     def favorite_activities
       get_call("user/#{user_id}/activities/favorite.json")
     end
 
+    # adds the activity with the given ID to user's list of favorite activities.
+    # @param activity_id ID of the activity to be added to the list of favorite activities
     def add_favorite_activity(activity_id)
       post_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
     end
 
+    # removes the activity with given ID from list of favorite activities.
+    # @param activity_id ID of the activity to be removed from favorite activity
     def remove_favorite_activity(activity_id)
       delete_call("user/#{user_id}/activities/log/favorite/#{activity_id}.json")
     end
@@ -134,6 +167,8 @@ module FitgemOauth2
     #      Activity Goals
     # ======================================
 
+    # retrieve activity goals for a period
+    # @period the period for which the goals need to be retrieved. either 'weekly' or 'daily'
     def goals(period)
       unless period && %w(daily weekly).include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
@@ -141,6 +176,9 @@ module FitgemOauth2
       get_call("user/#{user_id}/activities/goals/#{period}.json")
     end
 
+    # update activity goals
+    # @param period period for the goal ('weekly' or 'daily')
+    # @param params the POST params for the request. Refer to Fitbit documentation for accepted format
     def update_activity_goals(period, params)
       unless period && %w(daily weekly).include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
@@ -148,6 +186,7 @@ module FitgemOauth2
       post_call("user/#{user_id}/activities/goals/#{period}.json", params)
     end
 
+    # retrieves lifetime statistics for the user
     def lifetime_stats
       get_call("user/#{user_id}/activities.json")
     end

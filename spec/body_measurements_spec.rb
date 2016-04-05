@@ -96,6 +96,8 @@ describe FitgemOauth2::Client do
       expect { client.body_time_series(opts) }.
           to raise_error(FitgemOauth2::InvalidArgumentError, 'Please specify either period or end date, not both.')
     end
+
+    it 'raises error if resource is invalid'
   end
 
 

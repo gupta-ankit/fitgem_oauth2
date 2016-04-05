@@ -4,6 +4,7 @@ module FitgemOauth2
     HR_PERIODS = %w(1d 7d 30d 1w 1m)
     HR_DETAIL_LEVELS = %w(1sec 1min)
 
+    # retrieve heartrate time series
     def heartrate_time_series(start_date: nil, end_date: nil, period: nil)
       unless start_date
         raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.'
@@ -28,6 +29,7 @@ module FitgemOauth2
       get_call(url + '.json')
     end
 
+    # retrieve intraday series for heartrate
     def intraday_heartrate_time_series(start_date: nil, end_date: nil, detail_level: nil, start_time: nil, end_time: nil)
       unless start_date
         raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.'

@@ -9,6 +9,11 @@ module FitgemOauth2
     #      Boday Fat
     # ======================================
 
+    # retrieves a list of all user's body fat log entries
+    # note: provide either end_date or period
+    # @param start_date start date for the logs
+    # @param end_date (optional)end date for the logs
+    # @param period (optional) period for the logs
     def body_fat_logs(start_date: nil, end_date: nil, period: nil)
       unless start_date
         raise FitgemOauth2::InvalidArgumentError, 'must specify start_date'
@@ -31,10 +36,14 @@ module FitgemOauth2
       get_call(url)
     end
 
+    # logs body fat
+    # @param params POST parameters for logging body fat
     def log_body_fat(params)
       post_call("user/#{user_id}/body/log/fat.json", params)
     end
 
+    # delete logged body fat
+    # @param id ID of the log to be deleted.
     def delete_logged_body_fat(id)
       delete_call("user/#{user_id}/body/log/fat/#{id}.json")
     end
@@ -44,6 +53,11 @@ module FitgemOauth2
     #   Body Time Series
     # ==================================
 
+    # retrieve body time series for the user; provide at least one of end_date and period
+    # @param resource (required)the resource requested ['bmi', 'fat', or 'weight']
+    # @param start_date (required)the start date for the series
+    # @param end_date (optional)the end date for the series
+    # @param period (optional)period for the time series. valid periods are BODY_TIME_SERIES_PERIODS
     def body_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
       unless resource && start_date
         raise FitgemOauth2::InvalidArgumentError, 'resource and start_date are required parameters. Please specify both.'
@@ -78,6 +92,8 @@ module FitgemOauth2
     #      Body Goals
     # ======================================
 
+    # retrieves body goals based on the type specified
+    # @param type 'fat' or 'weight'
     def body_goals(type)
       if type && BODY_GOALS.include?(type)
         get_call("user/#{user_id}/body/log/#{type}/goal.json")
@@ -86,10 +102,14 @@ module FitgemOauth2
       end
     end
 
+    # update body fat goal
+    # @param params POST params for updating body fat goal
     def update_body_fat_goal(params)
       post_call("user/#{user_id}/body/log/fat/goal.json", params)
     end
 
+    # update weight goal
+    # @param params POST params for updating weight goal
     def update_weight_goal(params)
       post_call("user/#{user_id}/body/log/weight/goal.json", params)
     end
@@ -98,6 +118,10 @@ module FitgemOauth2
     #      Body Weight
     # ======================================
 
+    # retrieve weight logs; specify either the end_date or period
+    # @param start_date start date for the logs
+    # @param end_date (optional)end_date for the logs
+    # @param period (optional)period for the logs
     def weight_logs(start_date: nil, end_date: nil, period: nil)
       unless start_date
         raise FitgemOauth2::InvalidArgumentError, 'start_date not specified.'
@@ -123,11 +147,14 @@ module FitgemOauth2
       get_call(url + '.json')
     end
 
-
+    # logs weight for the user
+    # @param params POST message for logging weight
     def log_weight(params)
       post_call("user/#{user_id}/body/log/weight.json", params)
     end
 
+    # delete logged weight
+    # @param id ID of the weight log to be deleted
     def delete_logged_weight(id)
       delete_call("user/#{user_id}/body/log/weight/#{id}.json")
     end
