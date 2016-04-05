@@ -5,29 +5,36 @@ module FitgemOauth2
     #      Activities Retrieval Methods
     # ======================================
 
-    ALLOWED_ACTIVITY_PATHS = %w(calories caloriesBMR steps distance floors elevation minutesSedentary minutesLightlyActive minutesFairlyActive minutesVeryActive activityCaloriestracker/calories tracker/steps tracker/distance tracker/floors tracker/elevation tracker/minutesSedentary tracker/minutesLightlyActive tracker/minutesFairlyActive tracker/minutesVeryActive tracker/activityCalories)
+    ACTIVITY_RESOURCES = %w(calories caloriesBMR steps distance floors elevation minutesSedentary minutesLightlyActive minutesFairlyActive minutesVeryActive activityCaloriestracker/calories tracker/steps tracker/distance tracker/floors tracker/elevation tracker/minutesSedentary tracker/minutesLightlyActive tracker/minutesFairlyActive tracker/minutesVeryActive tracker/activityCalories)
 
-    ALLOWED_ACTIVITY_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
+    ACTIVITY_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
 
     def daily_activity_summary(date)
       get_call("user/#{user_id}/activities/date/#{format_date(date)}.json")
     end
 
-    def activity_time_series(resource_path, start_date, end_date_or_period)
-      unless activity_resource_path?(resource_path)
-        raise FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{ALLOWED_ACTIVITY_PATHS}"
+    def activity_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
+
+      unless resource && ACTIVITY_RESOURCES.include?(resource)
+        raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Valid resources are #{ACTIVITY_RESOURCES}."
       end
-      if activity_period?(end_date_or_period)
-        get_activities(resource_path, format_date(start_date), end_date_or_period)
-      else
-        begin
-          second = format_date(end_date_or_period)
-        rescue FitgemOauth2::InvalidDateArgument
-          raise FitgemOauth2::InvalidArgumentError,
-                "#{end_date_or_period} is neither a valid date nor a valid period. If you want to specify period, please use one of #{ALLOWED_ACTIVITY_PERIODS}"
-        end
-        get_activities(resource_path, format_date(start_date), second)
+
+      unless start_date
+        raise FitgemOauth2::InvalidArgumentError, 'Start date must be specified.'
       end
+
+      if period && end_date
+        raise FitgemOauth2::InvalidArgumentError, 'Both period and end_date are specified. Please specify only one.'
+      end
+
+      if period && !ACTIVITY_PERIODS.include?(period)
+        raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Valid periods are #{ACTIVITY_PERIODS}."
+      end
+
+      first = format_date(start_date)
+      second = period || format_date(end_date)
+      url = ['user', user_id, 'activities', resource, 'date', first, second].join('/')
+      get_call(url + '.json')
     end
 
     # ======================================
@@ -85,11 +92,11 @@ module FitgemOauth2
       delete_call("user/#{user_id}/activities/#{id}.json")
     end
 
-    def get_activity_list
+    def activity_list
       get_call("user/#{user_id}/activities/list.json")
     end
 
-    def get_activity_tcx(id)
+    def activity_tcx(id)
       get_call("user/#{user_id}/activities/#{id}.tcx")
     end
 
@@ -144,23 +151,6 @@ module FitgemOauth2
 
     def lifetime_stats
       get_call("user/#{user_id}/activities.json")
-    end
-
-    # ======================================
-    #      Private Methods
-    # ======================================
-
-    private
-    def get_activities(resource_path, first, second)
-      get_call("user/#{user_id}/activities/#{resource_path}/date/#{first}/#{second}.json")
-    end
-
-    def activity_resource_path?(resource_path)
-      resource_path && ALLOWED_ACTIVITY_PATHS.include?(resource_path)
-    end
-
-    def activity_period?(period)
-      period && ALLOWED_ACTIVITY_PERIODS.include?(period)
     end
   end
 end

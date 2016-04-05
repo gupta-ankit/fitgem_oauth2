@@ -23,34 +23,40 @@ describe FitgemOauth2::Client do
     before(:each) do
       @resp = random_sequence
       @valid_resource = 'calories'
-      @yesterday = client.format_date(Date.today - 1)
-      @today = client.format_date(Date.today)
+      @yesterday = Date.today - 1
+      @today = Date.today
       @valid_period = '1m'
       @invalid_resource = 'movies'
       @invalid_period = 'biweekly'
     end
 
     it 'gets activity time series for start and end date' do
-      expect(client).to receive(:get_call).with("user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@today}.json").
+      expect(client).to receive(:get_call).
+          with("user/#{user_id}/activities/#{@valid_resource}/date/#{client.format_date(@yesterday)}/#{client.format_date(@today)}.json").
           and_return(@resp)
-      expect(client.activity_time_series(@valid_resource, @yesterday, @today)).to eql(@resp)
+      opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today}
+      expect(client.activity_time_series(opts)).to eql(@resp)
     end
 
     it 'gets activity time series for base date and period' do
-      expect(client).to receive(:get_call).with("user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@valid_period}.json").
+      expect(client).to receive(:get_call).
+          with("user/#{user_id}/activities/#{@valid_resource}/date/#{client.format_date(@yesterday)}/#{@valid_period}.json").
           and_return(@resp)
-      expect(client.activity_time_series(@valid_resource, @yesterday, @valid_period)).to eql(@resp)
+      opts = {resource: @valid_resource, start_date: @yesterday, period: @valid_period}
+      expect(client.activity_time_series(opts)).to eql(@resp)
     end
 
     it 'raises exception if the resource path is invalid' do
-      expect { client.activity_time_series(@invalid_resource, @yesterday, @today) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, "resource_path should be one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PATHS}")
+      opts = {resource: @invalid_resource, start_date: @yesterday, end_date: @today}
+      expect { client.activity_time_series(opts) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::ACTIVITY_RESOURCES}.")
     end
 
     it 'raises exception if period is invalid' do
-      expect { client.activity_time_series(@valid_resource, @yesterday, @invalid_period) }.
+      opts = {resource: @valid_resource, start_date: @yesterday, period: @invalid_period}
+      expect { client.activity_time_series(opts) }.
           to raise_error(FitgemOauth2::InvalidArgumentError,
-                         "#{@invalid_period} is neither a valid date nor a valid period. If you want to specify period, please use one of #{FitgemOauth2::Client::ALLOWED_ACTIVITY_PERIODS}")
+                         "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::ACTIVITY_PERIODS}.")
     end
   end
 
@@ -149,7 +155,7 @@ describe FitgemOauth2::Client do
     it 'gets activity list' do
       activity_list = {activity_list: 'testing'}
       expect(client).to receive(:get_call).with("user/#{user_id}/activities/list.json").and_return(activity_list)
-      expect(client.get_activity_list).to eql(activity_list)
+      expect(client.activity_list).to eql(activity_list)
     end
   end
 
@@ -158,7 +164,7 @@ describe FitgemOauth2::Client do
       activity_list = {activity_list: 'testing'}
       id = 1
       expect(client).to receive(:get_call).with("user/#{user_id}/activities/#{id}.tcx").and_return(activity_list)
-      expect(client.get_activity_tcx(id)).to eql(activity_list)
+      expect(client.activity_tcx(id)).to eql(activity_list)
     end
   end
 
