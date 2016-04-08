@@ -80,7 +80,11 @@ module FitgemOauth2
       headers_to_keep = %w(fitbit-rate-limit-limit fitbit-rate-limit-remaining fitbit-rate-limit-reset)
 
       error_handler = {
-          200 => lambda { JSON.parse(response.body).merge!(response.headers.slice(*headers_to_keep)) },
+          200 => lambda {
+            body = JSON.parse(response.body)
+            body = {body: body} if body.is_a?(Array)
+            body.merge!(response.headers.slice(*headers_to_keep))
+          },
           400 => lambda { raise FitgemOauth2::BadRequestError },
           401 => lambda { raise FitgemOauth2::UnauthorizedError },
           403 => lambda { raise FitgemOauth2::ForbiddenError },
@@ -88,7 +92,7 @@ module FitgemOauth2
           500..599 => lambda { raise FitgemOauth2::ServerError }
       }
 
-      fn = error_handler.detect { |k , _| k === response.status }
+      fn = error_handler.detect { |k, _| k === response.status }
       if fn === nil
         raise StandardError, "Unexpected response status #{response.status}"
       else
