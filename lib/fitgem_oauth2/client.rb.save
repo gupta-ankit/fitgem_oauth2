@@ -1,6 +1,5 @@
 require 'fitgem_oauth2/activity.rb'
-require 'fitgem_oauth2/body_measurements.rb'
-require 'fitgem_oauth2/devices.rb'
+require 'fitgem_oauth2/body_measurements.rb'require 'fitgem_oauth2/devices.rb'
 require 'fitgem_oauth2/errors.rb'
 require 'fitgem_oauth2/food.rb'
 require 'fitgem_oauth2/friends.rb'
@@ -85,8 +84,8 @@ module FitgemOauth2
             body = {body: body} if body.is_a?(Array)
             body.merge!(response.headers.slice(*headers_to_keep))
           },
-          201 => lambda { },
-          204 => lambda { },
+	  201 => lambda { raise FitgemOauth2::UnauthorizedError },
+	  204 => lambda { raise FitgemOauth2::BadRequestError },
           400 => lambda { raise FitgemOauth2::BadRequestError },
           401 => lambda { raise FitgemOauth2::UnauthorizedError },
           403 => lambda { raise FitgemOauth2::ForbiddenError },
