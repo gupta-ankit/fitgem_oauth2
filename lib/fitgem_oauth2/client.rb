@@ -85,8 +85,7 @@ module FitgemOauth2
             body = {body: body} if body.is_a?(Array)
             body.merge!(response.headers.slice(*headers_to_keep))
           },
-	  201 => lambda { raise FitgemOauth2::UnauthorizedError },
-	  204 => lambda { raise FitgemOauth2::BadRequestError },
+          201 => lambda { raise FitgemOauth2::ServerError },
           400 => lambda { raise FitgemOauth2::BadRequestError },
           401 => lambda { raise FitgemOauth2::UnauthorizedError },
           403 => lambda { raise FitgemOauth2::ForbiddenError },
