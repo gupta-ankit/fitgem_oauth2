@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fitgem_oauth2 (1.0.4)
+    fitgem_oauth2 (1.0.6)
       faraday (~> 0.9)
 
 GEM
