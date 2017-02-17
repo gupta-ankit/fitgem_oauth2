@@ -1,11 +1,22 @@
-require 'rake/testtask'
+require 'bundler'
+require 'rspec/core/rake_task'
 
-task :console do
-  exec "irb -r fitgem_oauth2 -I ./lib"
+Bundler::GemHelper.install_tasks
+
+desc 'Default: run specs.'
+
+RSpec::Core::RakeTask.new(:spec)
+task :test => :spec
+
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new do |tsk|
+    tsk.fail_on_error = false #do not fail the build if rubocop report
+  end
+rescue LoadError
+  task :rubocop do
+    $stderr.puts 'RuboCop is disabled'
+  end
 end
 
-Rake::TestTask.new do |t|
-  t.libs << 'test'
-end
-
-desc "Run tests"
+task :default => [:spec, :rubocop]

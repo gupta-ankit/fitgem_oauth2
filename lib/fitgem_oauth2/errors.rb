@@ -2,6 +2,10 @@ module FitgemOauth2
   class InvalidDateArgument < ArgumentError
   end
 
+  class InvalidTimeArgument < ArgumentError
+
+  end
+
   class InvalidArgumentError < ArgumentError
   end
 

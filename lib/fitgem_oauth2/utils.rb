@@ -1,37 +1,41 @@
 module FitgemOauth2
   class Client
-    # This function was copied from the Fitgem project (https://github.com/whazzmaster/fitgem/blob/master/lib/fitgem/helpers.rb)
-    # Format any of a variety of date types into the formatted string
-    # required when using the fitbit API.
-    #
-    # The date parameter can take several different kind of objects: a
-    # DateTime object, a Date object, a Time object or a String object.  Furthermore,
-    # the string object may be either the date in a preformatted string
-    # ("yyyy-MM-dd"), or it may be the string values "today" or
-    # "tomorrow".
-    #
-    # @param [DateTime, Date, Time, String] date The object to format into a
-    #   date string
-    # @raise [Fitgem::InvalidDateArgument] Raised when the object is
-    #   not a DateTime, Date, Time or a valid (yyyy-MM-dd) String object
-    # @return [String] Date in "yyyy-MM-dd" string format
+
     def format_date(date)
-      if date.is_a? String
-        case date
-        when 'today'
-          return Date.today.strftime("%Y-%m-%d")
-        when 'yesterday'
-          return (Date.today-1).strftime("%Y-%m-%d")
-        else
-          unless date =~ /\d{4}\-\d{2}\-\d{2}/
-            raise FitgemOauth2::InvalidDateArgument, "Invalid date (#{date}), must be in yyyy-MM-dd format"
-          end
-          return date
-        end
+
+      if !date
+        return nil
+      end
+
+      valid_semantic_date = %w(today yesterday).include? date
+      valid_date_string = ((date =~ /\d{4}\-\d{2}\-\d{2}/) == 0)
+      if valid_date_string
+        date
+      elsif valid_semantic_date
+        date_from_semantic(date)
       elsif Date === date || Time === date || DateTime === date
-        return date.strftime("%Y-%m-%d")
+        date.strftime('%Y-%m-%d')
       else
         raise FitgemOauth2::InvalidDateArgument, "Date used must be a date/time object or a string in the format YYYY-MM-DD; supplied argument is a #{date.class}"
+      end
+    end
+
+    def format_time(time)
+      if ( (time =~ /\d{2}:\d{2}/) == 0)
+        time
+      elsif DateTime === time || Time === time
+        time.strftime('%H:%M')
+      else
+        raise FitgemOauth2::InvalidTimeArgument, "Time used must be a DateTime/Time object or a string in the format hh:mm; supplied argument is a #{time.class}"
+      end
+    end
+
+    private
+    def date_from_semantic(semantic)
+      if semantic === 'yesterday'
+        (Date.today-1).strftime('%Y-%m-%d')
+      elsif semantic == 'today'
+        Date.today.strftime('%Y-%m-%d')
       end
     end
   end

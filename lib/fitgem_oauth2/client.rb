@@ -6,8 +6,9 @@ require 'fitgem_oauth2/food.rb'
 require 'fitgem_oauth2/friends.rb'
 require 'fitgem_oauth2/heartrate.rb'
 require 'fitgem_oauth2/sleep.rb'
-require 'fitgem_oauth2/steps.rb'
+#require 'fitgem_oauth2/steps.rb'
 require 'fitgem_oauth2/subscription.rb'
+require 'fitgem_oauth2/subscriptions.rb'
 require 'fitgem_oauth2/users.rb'
 require 'fitgem_oauth2/utils.rb'
 require 'fitgem_oauth2/version.rb'
@@ -18,104 +19,91 @@ require 'faraday'
 module FitgemOauth2
   class Client
 
-    attr_reader :token
-
-    attr_reader :user_id
+    DEFAULT_USER_ID = '-'
+    API_VERSION = '1'
 
     attr_reader :client_id
-
     attr_reader :client_secret
+    attr_reader :token
+    attr_reader :user_id
+    attr_reader :unit_system
 
     def initialize(opts)
+      missing = [:client_id, :client_secret, :token] - opts.keys
+      if missing.size > 0
+        raise FitgemOauth2::InvalidArgumentError, "Missing required options: #{missing.join(',')}"
+      end
+
       @client_id = opts[:client_id]
-      if @client_id.nil?
-        puts "TODO. Raise an exception due to missing client id"
-      end
-
       @client_secret = opts[:client_secret]
-      if @client_secret.nil?
-        puts "TODO. Raise an exception due to missing client secret"
-      end
-
       @token = opts[:token]
-      if @token.nil?
-        puts "TODO. Raise an exception due to missing token"
-      end
-
-      @user_id = opts[:user_id]
-      if @user_id.nil?
-        @user_id = "-"
-      end
-
-      @connection = Faraday.new("https://api.fitbit.com")
+      @user_id = (opts[:user_id] || DEFAULT_USER_ID)
+      @unit_system = opts[:unit_system]
+      @connection = Faraday.new('https://api.fitbit.com')
     end
 
-    def get_call(url)
-      response = connection.get(url)  do |request|
-        request.headers['Authorization'] = "Bearer #{token}"
-        request.headers['Content-Type'] = "application/x-www-form-urlencoded"
-      end
-
-      headers_to_keep = ["fitbit-rate-limit-limit","fitbit-rate-limit-remaining","fitbit-rate-limit-reset"]
-
-      case response.status
-      when 200; return JSON.parse(response.body).merge!(response.headers.slice(*headers_to_keep))
-      when 400; raise FitgemOauth2::BadRequestError
-      when 401; raise FitgemOauth2::UnauthorizedError
-      when 403; raise FitgemOauth2::ForbiddenError
-      when 404; raise FitgemOauth2::NotFoundError
-      when 500..599; raise FitgemOauth2::ServerError
-      end
-    end
-
-    # @param payload [Hash] or similar will be converted to json
-    # @return [Array] of [response_code, response_data] where the data
-    #         is parsed JSON similar to what you get back from a get
-    #         call.
-    def post_call(url, headers = {}, payload = nil)
-      response = connection.post  do |request|
-        json_request(request, url, payload, headers)
-      end
-      json_response(response)
-    end
-
-    def delete_call(url, headers = {}, payload = nil)
-      response = connection.delete do |request|
-        json_request(request, url, payload, headers)
-      end
-      json_response(response)
-    end
-
-    # @param refresh_token [String] The user's OAuth 1.0a access token
-    #        and access token secret concatenated with a colon.
     def refresh_access_token(refresh_token)
       response = connection.post('/oauth2/token') do |request|
         encoded = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
         request.headers['Authorization'] = "Basic #{encoded}"
-        request.headers['Content-Type'] = "application/x-www-form-urlencoded"
-        request.params['grant_type'] = "refresh_token"
+        request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        request.params['grant_type'] = 'refresh_token'
         request.params['refresh_token'] = refresh_token
       end
-      return JSON.parse(response.body)
+      JSON.parse(response.body)
+    end
+
+    def get_call(url)
+      url = "#{API_VERSION}/#{url}"
+      response = connection.get(url) { |request| set_headers(request) }
+      parse_response(response)
+    end
+
+    def post_call(url, params = {})
+      url = "#{API_VERSION}/#{url}"
+      response = connection.post(url, params) { |request| set_headers(request) }
+      parse_response(response)
+    end
+
+    def delete_call(url)
+      url = "#{API_VERSION}/#{url}"
+      response = connection.delete(url) { |request| set_headers(request) }
+      parse_response(response)
     end
 
     private
     attr_reader :connection
 
-    # Configure a faraday request for json interaction
-    def json_request(request, url, payload, headers)
-      request.url url
+    def set_headers(request)
       request.headers['Authorization'] = "Bearer #{token}"
-      request.headers['Content-Type'] = 'application/json'
-      request.headers.merge!(headers) if headers
-      request.body = payload.to_json if payload
+      request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+      request.headers['Accept-Language'] = unit_system unless unit_system == nil
     end
 
-    # Parse a json response, returning [code, data] tuple.
-    def json_response(response)
-      headers_to_keep = ["fitbit-rate-limit-limit","fitbit-rate-limit-remaining","fitbit-rate-limit-reset"]
-      raise FitgetmOauth2::ServerError if response.status >= 500
-      [response.status, JSON.parse(response.body).merge!(response.headers.slice(*headers_to_keep))]
+    def parse_response(response)
+      headers_to_keep = %w(fitbit-rate-limit-limit fitbit-rate-limit-remaining fitbit-rate-limit-reset)
+
+      error_handler = {
+          200 => lambda {
+            body = JSON.parse(response.body)
+            body = {body: body} if body.is_a?(Array)
+            body.merge!(response.headers.slice(*headers_to_keep))
+          },
+          201 => lambda { },
+          204 => lambda { },
+          400 => lambda { raise FitgemOauth2::BadRequestError },
+          401 => lambda { raise FitgemOauth2::UnauthorizedError },
+          403 => lambda { raise FitgemOauth2::ForbiddenError },
+          404 => lambda { raise FitgemOauth2::NotFoundError },
+          500..599 => lambda { raise FitgemOauth2::ServerError }
+      }
+
+      fn = error_handler.detect { |k, _| k === response.status }
+      if fn === nil
+        raise StandardError, "Unexpected response status #{response.status}"
+      else
+        fn.last.call
+      end
     end
   end
 end
