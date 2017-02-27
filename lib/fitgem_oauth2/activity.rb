@@ -109,8 +109,16 @@ module FitgemOauth2
     end
 
     # retrieves activity list for the user
-    def activity_list
-      get_call("user/#{user_id}/activities/list.json")
+    def activity_list(date, sort, limit)
+      date_param = format_date(date)
+      if sort == "asc"
+        date_param = "afterDate=#{date_param}"
+      elsif sort == "desc"
+        date_param = "beforeDate=#{date_param}"
+      else
+        raise FitgemOauth2::InvalidArgumentError, "sort can either be asc or desc"
+      end
+      get_call("user/#{user_id}/activities/list.json?offset=0&limit=#{limit}&sort=#{sort}&#{date_param}")
     end
 
     # retrieves activity list in the tcx format
