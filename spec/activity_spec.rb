@@ -154,8 +154,11 @@ describe FitgemOauth2::Client do
   describe '#get_activity_list' do
     it 'gets activity list' do
       activity_list = {activity_list: 'testing'}
-      expect(client).to receive(:get_call).with("user/#{user_id}/activities/list.json").and_return(activity_list)
-      expect(client.activity_list).to eql(activity_list)
+      date = '2017-01-01'
+      sort = 'asc'
+      limit = 10
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/list.json?offset=0&limit=#{limit}&sort=#{sort}&afterDate=#{date}").and_return(activity_list)
+      expect(client.activity_list(date, sort, limit)).to eql(activity_list)
     end
   end
 
