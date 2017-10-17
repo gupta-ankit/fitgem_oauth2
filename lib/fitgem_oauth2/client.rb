@@ -85,7 +85,10 @@ module FitgemOauth2
           200 => lambda {
             body = JSON.parse(response.body)
             body = {body: body} if body.is_a?(Array)
-            body.merge!(response.headers.slice(*headers_to_keep))
+            headers = response.headers.to_hash.keep_if { |k,v|
+              headers_to_keep.include? k
+            }
+            body.merge!(headers)
           },
           201 => lambda { },
           204 => lambda { },
