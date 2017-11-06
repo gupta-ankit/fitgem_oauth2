@@ -57,8 +57,23 @@ module FitgemOauth2
       parse_response(response)
     end
 
+    # This method is a helper method (like get_call) for 1.2 version of the API_VERSION
+    # This method is needed because Fitbit API supports both versions as of current
+    # date (Nov 5, 2017)
+    def get_call_1_2(url)
+      url = "1.2/#{url}"
+      response = connection.get(url) {|request| set_headers(request)}
+      parse_response(response)
+    end
+
     def post_call(url, params = {})
       url = "#{API_VERSION}/#{url}"
+      response = connection.post(url, params) { |request| set_headers(request) }
+      parse_response(response)
+    end
+
+    def post_call_1_2(url, params = {})
+      url = "1.2/#{url}"
       response = connection.post(url, params) { |request| set_headers(request) }
       parse_response(response)
     end

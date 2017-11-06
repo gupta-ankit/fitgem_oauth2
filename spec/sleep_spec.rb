@@ -15,9 +15,18 @@ describe FitgemOauth2::Client do
     end
   end
 
+  def get_1_2_test(url, method, *args)
+    expect(client).to receive(:get_call_1_2).with(url).and_return(response)
+    if args.size == 0
+      expect(client.public_send(method)).to eql(response)
+    else
+      expect(client.public_send(method, args[0])).to eql(response)
+    end
+  end
+
   describe '#sleep_logs' do
     it 'gets sleep on date' do
-      get_test("user/#{user_id}/sleep/date/#{client.format_date(Date.today)}.json", 'sleep_logs', Date.today)
+      get_1_2_test("user/#{user_id}/sleep/date/#{client.format_date(Date.today)}.json", 'sleep_logs', Date.today)
     end
   end
 
@@ -89,7 +98,7 @@ describe FitgemOauth2::Client do
       params = random_sequence
       url = "user/#{user_id}/sleep.json"
       response = random_sequence
-      expect(client).to receive(:post_call).with(url, params).and_return(response)
+      expect(client).to receive(:post_call_1_2).with(url, params).and_return(response)
       expect(client.log_sleep(params)).to eql(response)
     end
   end

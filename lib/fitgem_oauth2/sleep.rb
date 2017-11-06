@@ -8,7 +8,23 @@ module FitgemOauth2
     # retrieve sleep logs for a date
     # @param date date for which sleep logs needs to be accessed
     def sleep_logs(date)
-      get_call("user/#{user_id}/sleep/date/#{format_date(date)}.json")
+      get_call_1_2("user/#{user_id}/sleep/date/#{format_date(date)}.json")
+    end
+
+    def sleep_logs_by_date_range(start_date, end_date)
+      get_call_1_2("user/#{user_id}/sleep/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
+    end
+
+    def sleep_logs_list(date, sort, limit)
+      date_param = format_date(date)
+      if sort == "asc"
+        date_param = "afterDate=#{date_param}"
+      elsif sort == "desc"
+        date_param = "beforeDate=#{date_param}"
+      else
+        raise FitgemOauth2::InvalidArgumentError, "sort can either be asc or desc"
+      end
+      get_call_1_2("user/#{user_id}/sleep/list.json?#{date_param}&offset=0&sort=#{sort}&limit=#{limit}")
     end
 
     # retrieve sleep goal for the user
@@ -54,7 +70,7 @@ module FitgemOauth2
     # log sleep
     # @param params POST params for creating sleep log
     def log_sleep(params)
-      post_call("user/#{user_id}/sleep.json", params)
+      post_call_1_2("user/#{user_id}/sleep.json", params)
     end
 
     # deleted sleep log
@@ -62,7 +78,5 @@ module FitgemOauth2
     def delete_logged_sleep(log_id)
       delete_call("user/#{user_id}/sleep/#{log_id}.json")
     end
-    
   end
-
 end
