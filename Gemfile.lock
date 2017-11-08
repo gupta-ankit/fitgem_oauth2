@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fitgem_oauth2 (1.1.1)
+    fitgem_oauth2 (1.1.2)
       faraday (~> 0.9)
 
 GEM
@@ -71,6 +71,3 @@ DEPENDENCIES
   rake (~> 10.5)
   rspec (~> 3.4)
   rubocop
-
-BUNDLED WITH
-   1.14.6
