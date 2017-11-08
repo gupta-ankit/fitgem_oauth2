@@ -107,10 +107,10 @@ module FitgemOauth2
           },
           201 => lambda { },
           204 => lambda { },
-          400 => lambda { raise FitgemOauth2::BadRequestError },
-          401 => lambda { raise FitgemOauth2::UnauthorizedError },
-          403 => lambda { raise FitgemOauth2::ForbiddenError },
-          404 => lambda { raise FitgemOauth2::NotFoundError },
+          400 => lambda { raise FitgemOauth2::BadRequestError, JSON.parse(response.body) },
+          401 => lambda { raise FitgemOauth2::UnauthorizedError, JSON.parse(response.body) },
+          403 => lambda { raise FitgemOauth2::ForbiddenError, JSON.parse(response.body) },
+          404 => lambda { raise FitgemOauth2::NotFoundError, JSON.parse(response.body) },
           500..599 => lambda { raise FitgemOauth2::ServerError }
       }
 
