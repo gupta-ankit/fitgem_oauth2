@@ -1,4 +1,5 @@
 require 'codeclimate-test-reporter'
+SimpleCov.formatter = SimpleCov::Formatter::Console
 CodeClimate::TestReporter.start
 
 require 'bundler/setup'
