@@ -59,18 +59,6 @@ module FitgemOauth2
     end
 
     private
-    def validate_start_date(start_date)
-      unless start_date
-        raise FitgemOauth2::InvalidArgumentError, 'Please specify a valid start date.'
-      end
-    end
-
-    def validate_end_date(end_date)
-      unless end_date
-        raise FitgemOauth2::InvalidArgumentError, 'Please specify a valid end date.'
-      end
-    end
-
     def validate_hr_period(period)
       unless period && HR_PERIODS.include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Valid periods are #{HR_PERIODS}."

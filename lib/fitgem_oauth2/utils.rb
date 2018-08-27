@@ -2,7 +2,6 @@ module FitgemOauth2
   class Client
 
     def format_date(date)
-
       if !date
         return nil
       end
@@ -27,6 +26,18 @@ module FitgemOauth2
         time.strftime('%H:%M')
       else
         raise FitgemOauth2::InvalidTimeArgument, "Time used must be a DateTime/Time object or a string in the format hh:mm; supplied argument is a #{time.class}"
+      end
+    end
+
+    def validate_start_date(start_date)
+      unless start_date
+        raise FitgemOauth2::InvalidArgumentError, 'Please specify a valid start date.'
+      end
+    end
+
+    def validate_end_date(end_date)
+      unless end_date
+        raise FitgemOauth2::InvalidArgumentError, 'Please specify a valid end date.'
       end
     end
 

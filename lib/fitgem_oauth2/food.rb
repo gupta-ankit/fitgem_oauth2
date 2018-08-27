@@ -9,9 +9,32 @@ module FitgemOauth2
     #   Food or Water Series
     # ==================================
 
+    def food_series_for_date_range(start_date, end_date)
+      validate_start_date(start_date)
+      validate_end_date(end_date)
+      get_call(food_series_url(user_id, format_date(start_date), format_date(end_date)))
+    end
+
+    def food_series_for_period(start_date, period)
+      validate_start_date(start_date)
+      validate_food_series_period(period)
+      get_call(food_series_url(user_id, format_date(start_date), period))
+    end
+
+    def water_series_for_date_range(start_date, end_date)
+      validate_start_date(start_date)
+      validate_end_date(end_date)
+      get_call(water_series_url(user_id, format_date(start_date), format_date(end_date)))
+    end
+
+    def water_series_for_period(start_date, period)
+      validate_start_date(start_date)
+      validate_food_series_period(period)
+      get_call(water_series_url(user_id, format_date(start_date), period))
+    end
 
     def food_series(resource: nil, start_date: nil, end_date: nil, period: nil)
-
+      warn '[DEPRECATED] use `food_series_for_date_range`, `food_series_for_period`, `water_series_for_date_range`, or `water_series_for_period` instead.'
       unless FOOD_SERIES_RESOURCES.include?(resource)
         raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Specify a valid resource from #{FOOD_SERIES_RESOURCES}"
       end
@@ -152,6 +175,22 @@ module FitgemOauth2
 
     def search_foods(params)
       post_call('foods/search.json', params)
+    end
+
+    private
+    def validate_food_series_period(period)
+      unless FOOD_SERIES_PERIODS.include?(period)
+        raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Specify a valid period from #{FOOD_SERIES_PERIODS}"
+      end
+    end
+
+
+    def food_series_url(user_id, start_date, end_date_or_period)
+      ['user', user_id, 'foods/log/caloriesIn', 'date', start_date, end_date_or_period].join('/') + '.json'
+    end
+
+    def water_series_url(user_id, start_date, end_date_or_period)
+      ['user', user_id, 'foods/log/water', 'date', start_date, end_date_or_period].join('/') + '.json'
     end
   end
 end

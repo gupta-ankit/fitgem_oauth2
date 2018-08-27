@@ -3,6 +3,43 @@ require 'rspec'
 describe FitgemOauth2::Client do
   let(:client) { FactoryGirl.build(:client) }
   let(:user_id) { client.user_id }
+  let(:response) { random_sequence }
+
+
+  shared_examples 'food_and_water_series' do |method, start_date, end_date_or_period, url|
+    let(:client) { FactoryGirl.build(:client) }
+    let(:user_id) { client.user_id }
+    let(:response) { random_sequence }
+
+    it 'returns data on valid params' do
+      expect(client).to receive(:get_call).with(url % user_id).and_return(response)
+      expect(client.send(method, start_date, end_date_or_period)).to eq(response)
+    end
+
+    it 'fails on missing start date' do
+      expect{client.send(method, nil, end_date_or_period)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
+
+    it 'fails on missing end date or period' do
+      expect{client.send(method, start_date, nil)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
+  end
+
+  describe "#food_series_for_date_range" do
+    include_examples 'food_and_water_series', :food_series_for_date_range, '2018-01-01', '2018-01-02', "user/%s/foods/log/caloriesIn/date/2018-01-01/2018-01-02.json"
+  end
+
+  describe "#food_series_for_period" do
+    include_examples 'food_and_water_series', :food_series_for_period, '2018-01-01', '1d', "user/%s/foods/log/caloriesIn/date/2018-01-01/1d.json"
+  end
+
+  describe "#water_series_for_date_range" do
+    include_examples 'food_and_water_series', :water_series_for_date_range, '2018-01-01', '2018-01-02', "user/%s/foods/log/water/date/2018-01-01/2018-01-02.json"
+  end
+
+  describe "#water_series_for_period" do
+    include_examples 'food_and_water_series', :water_series_for_period, '2018-01-01', '1d', "user/%s/foods/log/water/date/2018-01-01/1d.json"
+  end
 
   describe '#food_goals' do
     it 'gets food goal' do
