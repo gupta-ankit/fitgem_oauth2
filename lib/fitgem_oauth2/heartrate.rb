@@ -31,6 +31,26 @@ module FitgemOauth2
 
     # retrieve intraday series for heartrate
     def intraday_heartrate_time_series(start_date: nil, end_date: nil, detail_level: nil, start_time: nil, end_time: nil)
+      intraday_series_guard(
+        start_date: start_date,
+        detail_level: detail_level,
+        start_time: start_time,
+        end_time: end_time
+      )
+
+      end_date = format_date(end_date) || '1d'
+
+      url = ['user', user_id, 'activities/heart/date', format_date(start_date), end_date, detail_level].join('/')
+
+      if start_time && end_time
+        url = [url, 'time', format_time(start_time), format_time(end_time)].join('/')
+      end
+
+      get_call(url + '.json')
+    end
+
+    private
+    def intraday_series_guard(start_date:, detail_level:, start_time:, end_time:)
       unless start_date
         raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.'
       end
@@ -39,19 +59,9 @@ module FitgemOauth2
         raise FitgemOauth2::InvalidArgumentError, "Please specify the defail level. Detail level should be one of #{HR_DETAIL_LEVELS}."
       end
 
-      end_date = format_date(end_date) || '1d'
-
-      url = ['user', user_id, 'activities/heart/date', format_date(start_date), end_date, detail_level].join('/')
-
       if (start_time && !end_time) || (end_time && !start_time)
         raise FitgemOauth2::InvalidArgumentError, 'Either specify both the start_time and end_time or specify neither.'
       end
-
-      if start_time && end_time
-        url = [url, 'time', format_time(start_time), format_time(end_time)].join('/')
-      end
-
-      get_call(url + '.json')
     end
   end
 end
