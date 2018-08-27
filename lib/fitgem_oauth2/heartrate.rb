@@ -4,23 +4,31 @@ module FitgemOauth2
     HR_PERIODS = %w(1d 7d 30d 1w 1m)
     HR_DETAIL_LEVELS = %w(1sec 1min)
 
+    def hr_series_for_date_range(start_date, end_date)
+      validate_start_date(start_date)
+      validate_end_date(end_date)
+
+      url = ['user', user_id, 'activities/heart/date', format_date(start_date), format_date(end_date)].join('/')
+      get_call(url + '.json')
+    end
+
+    def hr_series_for_period(start_date, period)
+      validate_start_date(start_date)
+      validate_hr_period(period)
+
+      url = ['user', user_id, 'activities/heart/date', format_date(start_date), period].join('/')
+      get_call(url + '.json')
+    end
+
     # retrieve heartrate time series
     def heartrate_time_series(start_date: nil, end_date: nil, period: nil)
-      unless start_date
-        raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.'
-      end
+      warn "[DEPRECATION] `heartrate_time_series` is deprecated.  Please use `hr_series_for_date_range` or `hr_series_for_period` instead."
 
-      if end_date && period
-        raise FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.'
-      end
-
-      if !end_date && !period
-        raise FitgemOauth2::InvalidArgumentError, 'Neither end_date nor period specified. Specify at least one.'
-      end
-
-      if period && !HR_PERIODS.include?(period)
-        raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Valid periods are #{HR_PERIODS}."
-      end
+      regular_time_series_guard(
+        start_date: start_date,
+        end_date: end_date,
+        period: period
+      )
 
       second = period || format_date(end_date)
 
@@ -33,6 +41,7 @@ module FitgemOauth2
     def intraday_heartrate_time_series(start_date: nil, end_date: nil, detail_level: nil, start_time: nil, end_time: nil)
       intraday_series_guard(
         start_date: start_date,
+        end_date: end_date,
         detail_level: detail_level,
         start_time: start_time,
         end_time: end_time
@@ -50,7 +59,40 @@ module FitgemOauth2
     end
 
     private
-    def intraday_series_guard(start_date:, detail_level:, start_time:, end_time:)
+    def validate_start_date(start_date)
+      unless start_date
+        raise FitgemOauth2::InvalidArgumentError, 'Please specify a valid start date.'
+      end
+    end
+
+    def validate_end_date(end_date)
+      unless end_date
+        raise FitgemOauth2::InvalidArgumentError, 'Please specify a valid end date.'
+      end
+    end
+
+    def validate_hr_period(period)
+      unless period && HR_PERIODS.include?(period)
+        raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Valid periods are #{HR_PERIODS}."
+      end
+    end
+
+    def regular_time_series_guard(start_date:, end_date:, period:)
+      validate_start_date(start_date)
+
+      if end_date && period
+        raise FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.'
+      end
+
+      if !end_date && !period
+        raise FitgemOauth2::InvalidArgumentError, 'Neither end_date nor period specified. Specify at least one.'
+      end
+
+      validate_hr_period(period) if period
+    end
+
+
+    def intraday_series_guard(start_date:, end_date:, detail_level:, start_time:, end_time:)
       unless start_date
         raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.'
       end
