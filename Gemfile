@@ -4,6 +4,6 @@ source "https://rubygems.org"
 gemspec name: 'fitgem_oauth2'
 
 gem 'codeclimate-test-reporter', group: :test, require: nil
-gem 'rubocop'
+gem 'rubocop', group: :development, require: false
 gem 'simplecov', require: false, group: :test
 gem 'simplecov-console', require: false, group: :test

@@ -1,7 +1,7 @@
 module FitgemOauth2
   class Client
 
-    SUBSCRIBABLE_TYPES = [:sleep, :body, :activities, :foods, :all]
+    SUBSCRIBABLE_TYPES = %i[sleep body activities foods all].freeze
 
     def subscriptions(opts)
       get_call(subscription_url(opts))
@@ -18,15 +18,15 @@ module FitgemOauth2
     protected
 
     def subscription_url(opts)
-      type = opts[ :type ] || :all
+      type = opts[:type] || :all
       subscription_id = opts[:subscription_id]
 
-      url = [ 'user', user_id ]
+      url = ['user', user_id]
       url << type unless type == :all
       url << 'apiSubscriptions'
       url << subscription_id if subscription_id
 
-      return url.join('/') + '.json'
+      url.join('/') + '.json'
     end
   end
 end

@@ -2,8 +2,12 @@ module FitgemOauth2
 
   class Client
 
-    SLEEP_RESOURCES = %w(startTime  timeInBed  minutesAsleep  awakeningsCount  minutesAwake  minutesToFallAsleep  minutesAfterWakeup  efficiency)
-    SLEEP_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
+    SLEEP_RESOURCES = %w[
+      startTime timeInBed minutesAsleep awakeningsCount minutesAwake
+      minutesToFallAsleep minutesAfterWakeup efficiency
+    ].freeze
+
+    SLEEP_PERIODS = %w[1d 7d 30d 1w 1m 3m 6m 1y max].freeze
 
     # retrieve sleep logs for a date
     # @param date date for which sleep logs needs to be accessed
@@ -17,9 +21,9 @@ module FitgemOauth2
 
     def sleep_logs_list(date, sort, limit)
       date_param = format_date(date)
-      if sort == "asc"
+      if sort == 'asc'
         date_param = "afterDate=#{date_param}"
-      elsif sort == "desc"
+      elsif sort == 'desc'
         date_param = "beforeDate=#{date_param}"
       else
         raise FitgemOauth2::InvalidArgumentError, "sort can either be asc or desc"

@@ -1,9 +1,16 @@
 module FitgemOauth2
   class Client
 
-    ACTIVITY_RESOURCES = %w(calories caloriesBMR steps distance floors elevation minutesSedentary minutesLightlyActive minutesFairlyActive minutesVeryActive activityCaloriestracker/calories tracker/steps tracker/distance tracker/floors tracker/elevation tracker/minutesSedentary tracker/minutesLightlyActive tracker/minutesFairlyActive tracker/minutesVeryActive tracker/activityCalories)
+    ACTIVITY_RESOURCES = %w[
+      calories caloriesBMR steps distance floors elevation minutesSedentary
+      minutesLightlyActive minutesFairlyActive minutesVeryActive
+      activityCaloriestracker/calories tracker/steps tracker/distance
+      tracker/floors tracker/elevation tracker/minutesSedentary
+      tracker/minutesLightlyActive tracker/minutesFairlyActive
+      tracker/minutesVeryActive tracker/activityCalories
+    ].freeze
 
-    ACTIVITY_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
+    ACTIVITY_PERIODS = %w[1d 7d 30d 1w 1m 3m 6m 1y max].freeze
 
     # retrieves daily activity summary for a date
     # @param date the date for which the summary is retrieved

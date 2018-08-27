@@ -1,9 +1,8 @@
 module FitgemOauth2
   class Client
 
-    FOOD_SERIES_RESOURCES = %w( caloriesIn water )
-    FOOD_SERIES_PERIODS = %w( 1d 7d 30d 1w 1m 3m 6m 1y max )
-
+    FOOD_SERIES_RESOURCES = %w[caloriesIn water].freeze
+    FOOD_SERIES_PERIODS = %w[1d 7d 30d 1w 1m 3m 6m 1y max].freeze
 
     # ==================================
     #   Food or Water Series
@@ -178,12 +177,12 @@ module FitgemOauth2
     end
 
     private
+
     def validate_food_series_period(period)
       unless FOOD_SERIES_PERIODS.include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Specify a valid period from #{FOOD_SERIES_PERIODS}"
       end
     end
-
 
     def food_series_url(user_id, start_date, end_date_or_period)
       ['user', user_id, 'foods/log/caloriesIn', 'date', start_date, end_date_or_period].join('/') + '.json'
