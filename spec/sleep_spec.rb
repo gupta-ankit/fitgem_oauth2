@@ -19,14 +19,24 @@ describe FitgemOauth2::Client do
     expect(client).to receive(:get_call_1_2).with(url).and_return(response)
     if args.size == 0
       expect(client.public_send(method)).to eql(response)
-    else
+    elsif args.size == 1
       expect(client.public_send(method, args[0])).to eql(response)
+    elsif args.size == 2
+      expect(client.public_send(method, args[0], args[1])).to eql(response)
+    else
+      raise_error "Invalid argument count"
     end
   end
 
   describe '#sleep_logs' do
     it 'gets sleep on date' do
       get_1_2_test("user/#{user_id}/sleep/date/#{client.format_date(Date.today)}.json", 'sleep_logs', Date.today)
+    end
+  end
+
+  describe '#sleep_logs_by_date_range' do
+    it 'gets sleep for date range' do
+      get_1_2_test("user/#{user_id}/sleep/date/#{client.format_date(Date.today.prev_day)}/#{client.format_date(Date.today)}.json", 'sleep_logs_by_date_range', Date.today.prev_day, Date.today)
     end
   end
 
@@ -46,6 +56,8 @@ describe FitgemOauth2::Client do
   end
 
   describe '#sleep_time_series' do
+    # TODO the tests in this block will be removed and made clean when
+    # replacing sleep_time_series with cleanear methods
     before(:each) do
       @resp = random_sequence
       @yesterday = Date.today - 1
@@ -90,6 +102,32 @@ describe FitgemOauth2::Client do
       opts = {start_date: @yesterday, period: @valid_period}
       expect { client.sleep_time_series(opts) }.
           to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::SLEEP_RESOURCES}.")
+    end
+  end
+
+  describe '#sleep_logs_list' do
+    it 'returns data on valid params asc' do
+      url = "user/#{user_id}/sleep/list.json?afterDate=#{client.format_date(Date.today)}&offset=0&sort=asc&limit=10"
+      expect(client).to receive(:get_call_1_2).with(url).and_return(response)
+      expect(client.sleep_logs_list(Date.today, 'asc', 10)).to eq(response)
+    end
+
+    it 'returns data on valid params desc' do
+      url = "user/#{user_id}/sleep/list.json?beforeDate=#{client.format_date(Date.today)}&offset=0&sort=desc&limit=10"
+      expect(client).to receive(:get_call_1_2).with(url).and_return(response)
+      expect(client.sleep_logs_list(Date.today, 'desc', 10)).to eq(response)
+    end
+
+    it 'raises error on missing limit' do
+      expect{client.sleep_logs_list(Date.today, 'xyz', nil)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
+
+    it 'raises error on missing date' do
+      expect{client.sleep_logs_list(nil, 'xyz', 10)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
+
+    it 'raises error on invalid sort' do
+      expect{client.sleep_logs_list(Date.today, 'xyz', 10)}.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 

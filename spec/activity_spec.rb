@@ -58,6 +58,16 @@ describe FitgemOauth2::Client do
           to raise_error(FitgemOauth2::InvalidArgumentError,
                          "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::ACTIVITY_PERIODS}.")
     end
+
+    it 'raises error if start date is not specified' do
+      opts = {resource: @valid_resource, period: @invalid_period}
+      expect{client.activity_time_series(opts)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
+
+    it 'raises error if both period and end_date are specified' do
+      opts = {resource: @invalid_resource, start_date: @yesterday, end_date: @today, period: @valid_period}
+      expect{client.activity_time_series(opts)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
   end
 
 
@@ -152,13 +162,29 @@ describe FitgemOauth2::Client do
   end
 
   describe '#get_activity_list' do
-    it 'gets activity list' do
+    it 'gets activity list on asc' do
       activity_list = {activity_list: 'testing'}
       date = '2017-01-01'
       sort = 'asc'
       limit = 10
       expect(client).to receive(:get_call).with("user/#{user_id}/activities/list.json?offset=0&limit=#{limit}&sort=#{sort}&afterDate=#{date}").and_return(activity_list)
       expect(client.activity_list(date, sort, limit)).to eql(activity_list)
+    end
+
+    it 'gets activity list on desc' do
+      activity_list = {activity_list: 'testing'}
+      date = '2017-01-01'
+      sort = 'desc'
+      limit = 10
+      expect(client).to receive(:get_call).with("user/#{user_id}/activities/list.json?offset=0&limit=#{limit}&sort=#{sort}&beforeDate=#{date}").and_return(activity_list)
+      expect(client.activity_list(date, sort, limit)).to eql(activity_list)
+    end
+
+    it 'raises error if the sort order is not correct' do
+      date = '2017-01-01'
+      sort = 'xyz'
+      limit = 10
+      expect{client.activity_list(date, sort, limit)}.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 

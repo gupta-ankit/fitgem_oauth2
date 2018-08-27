@@ -13,15 +13,15 @@ describe FitgemOauth2::Client do
 
     it 'returns data on valid params' do
       expect(client).to receive(:get_call).with(url % user_id).and_return(response)
-      expect(client.send(method, start_date, end_date_or_period)).to eq(response)
+      expect(client.public_send(method, start_date, end_date_or_period)).to eq(response)
     end
 
     it 'fails on missing start date' do
-      expect{client.send(method, nil, end_date_or_period)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect{client.public_send(method, nil, end_date_or_period)}.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'fails on missing end date or period' do
-      expect{client.send(method, start_date, nil)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect{client.public_send(method, start_date, nil)}.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 
@@ -111,6 +111,18 @@ describe FitgemOauth2::Client do
       opts = {resource: 'caloriesIn', start_date: Date.today - 1, period: '1year'}
       expect { client.food_series(opts) }.
           to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Specify a valid period from #{FitgemOauth2::Client::FOOD_SERIES_PERIODS}")
+    end
+
+    it 'raises error if neither end_date nor period provided' do
+      opts = {resource: 'caloriesIn', start_date: Date.today - 1}
+      expect { client.food_series(opts) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
+
+    it 'raises error if both end_date and period are provided' do
+      opts = {resource: 'caloriesIn', start_date: Date.today - 1, end_date: Date.today, period: '1d'}
+      expect { client.food_series(opts) }.
+          to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 

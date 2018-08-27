@@ -32,6 +32,16 @@ describe FitgemOauth2::Client do
       expect(client).to receive(:get_call).with(url).and_return(@response)
       expect(client.body_fat_logs(opts)).to eql(@response)
     end
+
+    it 'raises error if start date is not provided' do
+      opts = {period: '1d'}
+      expect{client.body_fat_logs(opts)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
+
+    it 'raises error if an invalid period is supplied' do
+      opts = {start_date: @yesterday, period: '100d'}
+      expect{client.body_fat_logs}.to raise_error(FitgemOauth2::InvalidArgumentError)
+    end
   end
 
   describe '#log_body_fat' do
