@@ -1,3 +1,7 @@
+require 'webmock/rspec'
+include WebMock::API
+WebMock.enable!
+
 require 'codeclimate-test-reporter'
 require 'simplecov'
 require 'simplecov-console'
