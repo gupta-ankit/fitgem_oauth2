@@ -111,6 +111,7 @@ module FitgemOauth2
           401 => lambda { raise FitgemOauth2::UnauthorizedError },
           403 => lambda { raise FitgemOauth2::ForbiddenError },
           404 => lambda { raise FitgemOauth2::NotFoundError },
+          429 => lambda { raise FitgemOauth2::ApiLimitError },
           500..599 => lambda { raise FitgemOauth2::ServerError }
       }
 
