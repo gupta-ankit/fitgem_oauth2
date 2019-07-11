@@ -46,4 +46,13 @@ describe FitgemOauth2::Client do
       expect { client }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
+
+  describe "handling fitbit API status codes" do
+    it 'raises ApiLimitReachedError when Fitbit API returns 429' do
+      url = "https://api.fitbit.com/1/user/#{user_id}/activities/date/#{client.format_date(Date.today)}.json"
+      stub_request(:any, url)
+        .to_return(status: 429)
+      expect {client.daily_activity_summary(Date.today)}.to raise_error(FitgemOauth2::ApiLimitError)
+    end
+  end
 end
