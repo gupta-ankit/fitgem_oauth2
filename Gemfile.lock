@@ -40,7 +40,7 @@ GEM
     public_suffix (3.1.1)
     rainbow (2.2.2)
       rake
-    rake (10.5.0)
+    rake (13.0.1)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -88,7 +88,7 @@ DEPENDENCIES
   codeclimate-test-reporter
   factory_girl (~> 4.5)
   fitgem_oauth2!
-  rake (~> 10.5)
+  rake (>= 12.3.3)
   rspec (~> 3.4)
   rubocop
   simplecov
