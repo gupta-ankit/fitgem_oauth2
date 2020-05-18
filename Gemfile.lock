@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fitgem_oauth2 (2.0.1)
+    fitgem_oauth2 (2.1.0)
       faraday (~> 0.9)
 
 GEM
@@ -25,7 +25,7 @@ GEM
     docile (1.1.5)
     factory_girl (4.7.0)
       activesupport (>= 3.0.0)
-    faraday (0.15.4)
+    faraday (0.17.3)
       multipart-post (>= 1.2, < 3)
     hashdiff (0.4.0)
     hirb (0.7.3)
