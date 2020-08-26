@@ -1,7 +1,7 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
-
   class Client
-
     SLEEP_RESOURCES = %w[
       startTime timeInBed minutesAsleep awakeningsCount minutesAwake
       minutesToFallAsleep minutesAfterWakeup efficiency
@@ -26,7 +26,7 @@ module FitgemOauth2
       elsif sort == 'desc'
         date_param = "beforeDate=#{date_param}"
       else
-        raise FitgemOauth2::InvalidArgumentError, "sort can either be asc or desc"
+        raise FitgemOauth2::InvalidArgumentError, 'sort can either be asc or desc'
       end
       get_call_1_2("user/#{user_id}/sleep/list.json?#{date_param}&offset=0&sort=#{sort}&limit=#{limit}")
     end
@@ -48,9 +48,7 @@ module FitgemOauth2
     # @param end_date ending date for sleep time series
     # @param period period for sleep time series
     def sleep_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
-      unless start_date
-        raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.'
-      end
+      raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.' unless start_date
 
       unless resource && SLEEP_RESOURCES.include?(resource)
         raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Valid resources are #{SLEEP_RESOURCES}."

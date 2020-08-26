@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
   class Client
     def food_series_for_date_range(start_date, end_date)
@@ -30,13 +32,9 @@ module FitgemOauth2
         raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Specify a valid resource from #{FOOD_SERIES_RESOURCES}"
       end
 
-      if end_date && period
-        raise FitgemOauth2::InvalidArgumentError, 'Provide only one of end_date and period.'
-      end
+      raise FitgemOauth2::InvalidArgumentError, 'Provide only one of end_date and period.' if end_date && period
 
-      if !end_date && !period
-        raise FitgemOauth2::InvalidArgumentError, 'Provide at least one of end_date and period.'
-      end
+      raise FitgemOauth2::InvalidArgumentError, 'Provide at least one of end_date and period.' if !end_date && !period
 
       url = ['user', user_id, 'foods/log', resource, 'date', start_date].join('/')
 

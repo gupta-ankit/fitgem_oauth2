@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 require 'rspec'
 
 describe FitgemOauth2::Client do
-
   let(:client) { FactoryGirl.build(:client) }
   let(:user_id) { client.user_id }
   let(:response) { random_sequence }
 
   def get_test(url, method, *args)
     expect(client).to receive(:get_call).with(url).and_return(response)
-    if args.size == 0
+    if args.empty?
       expect(client.public_send(method)).to eql(response)
     else
       expect(client.public_send(method, args[0])).to eql(response)
@@ -17,14 +18,14 @@ describe FitgemOauth2::Client do
 
   def get_1_2_test(url, method, *args)
     expect(client).to receive(:get_call_1_2).with(url).and_return(response)
-    if args.size == 0
+    if args.empty?
       expect(client.public_send(method)).to eql(response)
     elsif args.size == 1
       expect(client.public_send(method, args[0])).to eql(response)
     elsif args.size == 2
       expect(client.public_send(method, args[0], args[1])).to eql(response)
     else
-      raise_error "Invalid argument count"
+      raise_error 'Invalid argument count'
     end
   end
 
@@ -56,7 +57,7 @@ describe FitgemOauth2::Client do
   end
 
   describe '#sleep_time_series' do
-    # TODO the tests in this block will be removed and made clean when
+    # TODO: the tests in this block will be removed and made clean when
     # replacing sleep_time_series with cleanear methods
     before(:each) do
       @resp = random_sequence
@@ -82,26 +83,26 @@ describe FitgemOauth2::Client do
 
     it 'raises error if both end_date and period are specified' do
       opts = {resource: 'startTime', start_date: @yesterday, end_date: @today, period: @valid_period}
-      expect { client.sleep_time_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.')
+      expect { client.sleep_time_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.')
     end
 
     it 'raises error if start_date is not given' do
       opts = {resource: 'startTime', end_date: @today, period: @valid_period}
-      expect { client.sleep_time_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, 'Start date not provided.')
+      expect { client.sleep_time_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, 'Start date not provided.')
     end
 
     it 'raises error if period is invalid' do
       opts = {resource: 'startTime', start_date: @yesterday, period: @invalid_period}
-      expect { client.sleep_time_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::SLEEP_PERIODS}.")
+      expect { client.sleep_time_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::SLEEP_PERIODS}.")
     end
 
     it 'raises error if resource is invalid' do
       opts = {start_date: @yesterday, period: @valid_period}
-      expect { client.sleep_time_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::SLEEP_RESOURCES}.")
+      expect { client.sleep_time_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::SLEEP_RESOURCES}.")
     end
   end
 
@@ -119,15 +120,15 @@ describe FitgemOauth2::Client do
     end
 
     it 'raises error on missing limit' do
-      expect{client.sleep_logs_list(Date.today, 'xyz', nil)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.sleep_logs_list(Date.today, 'xyz', nil) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'raises error on missing date' do
-      expect{client.sleep_logs_list(nil, 'xyz', 10)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.sleep_logs_list(nil, 'xyz', 10) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'raises error on invalid sort' do
-      expect{client.sleep_logs_list(Date.today, 'xyz', 10)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.sleep_logs_list(Date.today, 'xyz', 10) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 

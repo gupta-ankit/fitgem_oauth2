@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
   class Client
-
     SUBSCRIBABLE_TYPES = %i[sleep body activities foods all].freeze
 
     def subscriptions(opts)

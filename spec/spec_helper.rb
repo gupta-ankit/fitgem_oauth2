@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'webmock/rspec'
 include WebMock::API
 WebMock.enable!
@@ -14,7 +16,7 @@ Bundler.setup
 require 'fitgem_oauth2'
 
 require 'factory_girl'
-FactoryGirl.definition_file_paths = %w(spec/factories)
+FactoryGirl.definition_file_paths = %w[spec/factories]
 FactoryGirl.find_definitions
 
 RSpec.configure do |config|
@@ -22,5 +24,5 @@ RSpec.configure do |config|
 end
 
 def random_sequence
-  (0...8).map { (65 + rand(26)).chr }.join
+  (0...8).map { rand(65..90).chr }.join
 end

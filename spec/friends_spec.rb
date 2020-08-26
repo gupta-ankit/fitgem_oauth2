@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec'
 
 describe FitgemOauth2::Client do
@@ -48,7 +50,7 @@ describe FitgemOauth2::Client do
       params = random_sequence
       response = random_sequence
       expect(client).to receive(:post_call).with(url, params).and_return(response)
-      expect(client.respond_to_invitation(from_user_id,   params)).to eql(response)
+      expect(client.respond_to_invitation(from_user_id, params)).to eql(response)
     end
   end
 

@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 require 'rspec'
 
 describe FitgemOauth2::Client do
   let(:client) { FactoryGirl.build(:client) }
   let(:user_id) { client.user_id }
-  let(:response) {random_sequence}
+  let(:response) { random_sequence }
 
-  describe "#hr_series_for_date_range" do
-
+  describe '#hr_series_for_date_range' do
     it 'returns data for valid parameters' do
       url = "user/#{user_id}/activities/heart/date/2018-01-01/2018-01-02.json"
       expect(client).to receive(:get_call).with(url).and_return(response)
@@ -14,15 +15,15 @@ describe FitgemOauth2::Client do
     end
 
     it 'raises error on invalid start date' do
-      expect{client.hr_series_for_date_range('2018-01-01', nil)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.hr_series_for_date_range('2018-01-01', nil) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'raises error on invalid end date' do
-      expect{client.hr_series_for_date_range(nil, '2018-01-02')}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.hr_series_for_date_range(nil, '2018-01-02') }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 
-  describe "#hr_series_for_period" do
+  describe '#hr_series_for_period' do
     it 'returns data for valid params' do
       url = "user/#{user_id}/activities/heart/date/2018-01-01/1d.json"
       expect(client).to receive(:get_call).with(url).and_return(response)
@@ -30,17 +31,15 @@ describe FitgemOauth2::Client do
     end
 
     it 'raises error on invalid start_date' do
-      expect{client.hr_series_for_period(nil, '1d')}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.hr_series_for_period(nil, '1d') }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'raises error on invalid period' do
-      expect{client.hr_series_for_period('2018-01-01', '100h')}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.hr_series_for_period('2018-01-01', '100h') }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
-
   end
 
   describe '#heartrate_time_series' do
-
     before(:each) do
       @resp = random_sequence
       @yesterday = Date.today - 1
@@ -68,22 +67,21 @@ describe FitgemOauth2::Client do
 
     it 'raises error if both end_date and period are specified' do
       opts = {start_date: @yesterday, end_date: @today, period: @valid_period}
-      expect { client.heartrate_time_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.')
+      expect { client.heartrate_time_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.')
     end
 
     it 'raises error if start_date is not given' do
       opts = {end_date: @today, period: @valid_period}
-      expect { client.heartrate_time_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, 'Please specify a valid start date.')
+      expect { client.heartrate_time_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, 'Please specify a valid start date.')
     end
 
     it 'raises error if period is invalid' do
       opts = {start_date: @yesterday, period: @invalid_period}
-      expect { client.heartrate_time_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::HR_PERIODS}.")
+      expect { client.heartrate_time_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::HR_PERIODS}.")
     end
-
   end
 
   describe '#intraday_heartrate_time_series' do

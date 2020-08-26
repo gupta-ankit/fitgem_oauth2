@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 require 'fitgem_oauth2/food/collection.rb'
 require 'fitgem_oauth2/food/series.rb'
 require 'fitgem_oauth2/food/metadata.rb'
 
 module FitgemOauth2
   class Client
-
     FOOD_SERIES_RESOURCES = %w[caloriesIn water].freeze
     FOOD_SERIES_PERIODS = %w[1d 7d 30d 1w 1m 3m 6m 1y max].freeze
 

@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
   class Client
-
     ACTIVITY_RESOURCES = %w[
       calories caloriesBMR steps distance floors elevation minutesSedentary
       minutesLightlyActive minutesFairlyActive minutesVeryActive
@@ -29,14 +30,11 @@ module FitgemOauth2
     # @param period the period starting from start_date for which the series needs to be retrieved. If specifying period,
     #             do not use end_date
     def activity_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
-
       unless resource && ACTIVITY_RESOURCES.include?(resource)
         raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Valid resources are #{ACTIVITY_RESOURCES}."
       end
 
-      unless start_date
-        raise FitgemOauth2::InvalidArgumentError, 'Start date must be specified.'
-      end
+      raise FitgemOauth2::InvalidArgumentError, 'Start date must be specified.' unless start_date
 
       if period && end_date
         raise FitgemOauth2::InvalidArgumentError, 'Both period and end_date are specified. Please specify only one.'
@@ -78,22 +76,22 @@ module FitgemOauth2
 
       end_date ||= '1d'
 
-      unless detail_level && %w(1min 15min).include?(detail_level)
+      unless detail_level && %w[1min 15min].include?(detail_level)
         raise FitgemOauth2::InvalidArgumentError,
               'Must specify the data resolution to fetch intraday time series data for.'\
               ' One of (\"1d\" or \"15min\") is required.'
       end
 
       resource_path = [
-          'user', @user_id,
-          'activities', resource,
-          'date', format_date(start_date),
-          end_date, detail_level
+        'user', @user_id,
+        'activities', resource,
+        'date', format_date(start_date),
+        end_date, detail_level
       ].join('/')
 
       if start_time || end_time
         resource_path =
-            [resource_path, 'time', format_time(start_time), format_time(end_time)].join('/')
+          [resource_path, 'time', format_time(start_time), format_time(end_time)].join('/')
       end
       get_call("#{resource_path}.json")
     end
@@ -118,12 +116,12 @@ module FitgemOauth2
     # retrieves activity list for the user
     def activity_list(date, sort, limit)
       date_param = format_date(date)
-      if sort == "asc"
+      if sort == 'asc'
         date_param = "afterDate=#{date_param}"
-      elsif sort == "desc"
+      elsif sort == 'desc'
         date_param = "beforeDate=#{date_param}"
       else
-        raise FitgemOauth2::InvalidArgumentError, "sort can either be asc or desc"
+        raise FitgemOauth2::InvalidArgumentError, 'sort can either be asc or desc'
       end
       get_call("user/#{user_id}/activities/list.json?offset=0&limit=#{limit}&sort=#{sort}&#{date_param}")
     end
@@ -132,7 +130,6 @@ module FitgemOauth2
     def activity_tcx(id)
       get_call("user/#{user_id}/activities/#{id}.tcx")
     end
-
 
     # ======================================
     #      Activity Types
@@ -185,9 +182,10 @@ module FitgemOauth2
     # retrieve activity goals for a period
     # @period the period for which the goals need to be retrieved. either 'weekly' or 'daily'
     def goals(period)
-      unless period && %w(daily weekly).include?(period)
+      unless period && %w[daily weekly].include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
       end
+
       get_call("user/#{user_id}/activities/goals/#{period}.json")
     end
 
@@ -195,9 +193,10 @@ module FitgemOauth2
     # @param period period for the goal ('weekly' or 'daily')
     # @param params the POST params for the request. Refer to Fitbit documentation for accepted format
     def update_activity_goals(period, params)
-      unless period && %w(daily weekly).include?(period)
+      unless period && %w[daily weekly].include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Goal period should either be 'daily' or 'weekly'"
       end
+
       post_call("user/#{user_id}/activities/goals/#{period}.json", params)
     end
 

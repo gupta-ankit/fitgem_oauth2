@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
   class InvalidDateArgument < ArgumentError
   end
 
   class InvalidTimeArgument < ArgumentError
-
   end
 
   class InvalidArgumentError < ArgumentError

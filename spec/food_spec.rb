@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 require 'rspec'
 
 describe FitgemOauth2::Client do
   let(:client) { FactoryGirl.build(:client) }
   let(:user_id) { client.user_id }
   let(:response) { random_sequence }
-
 
   shared_examples 'food_and_water_series' do |method, start_date, end_date_or_period, url|
     let(:client) { FactoryGirl.build(:client) }
@@ -17,28 +18,28 @@ describe FitgemOauth2::Client do
     end
 
     it 'fails on missing start date' do
-      expect{client.public_send(method, nil, end_date_or_period)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.public_send(method, nil, end_date_or_period) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'fails on missing end date or period' do
-      expect{client.public_send(method, start_date, nil)}.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.public_send(method, start_date, nil) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 
-  describe "#food_series_for_date_range" do
-    include_examples 'food_and_water_series', :food_series_for_date_range, '2018-01-01', '2018-01-02', "user/%s/foods/log/caloriesIn/date/2018-01-01/2018-01-02.json"
+  describe '#food_series_for_date_range' do
+    include_examples 'food_and_water_series', :food_series_for_date_range, '2018-01-01', '2018-01-02', 'user/%s/foods/log/caloriesIn/date/2018-01-01/2018-01-02.json'
   end
 
-  describe "#food_series_for_period" do
-    include_examples 'food_and_water_series', :food_series_for_period, '2018-01-01', '1d', "user/%s/foods/log/caloriesIn/date/2018-01-01/1d.json"
+  describe '#food_series_for_period' do
+    include_examples 'food_and_water_series', :food_series_for_period, '2018-01-01', '1d', 'user/%s/foods/log/caloriesIn/date/2018-01-01/1d.json'
   end
 
-  describe "#water_series_for_date_range" do
-    include_examples 'food_and_water_series', :water_series_for_date_range, '2018-01-01', '2018-01-02', "user/%s/foods/log/water/date/2018-01-01/2018-01-02.json"
+  describe '#water_series_for_date_range' do
+    include_examples 'food_and_water_series', :water_series_for_date_range, '2018-01-01', '2018-01-02', 'user/%s/foods/log/water/date/2018-01-01/2018-01-02.json'
   end
 
-  describe "#water_series_for_period" do
-    include_examples 'food_and_water_series', :water_series_for_period, '2018-01-01', '1d', "user/%s/foods/log/water/date/2018-01-01/1d.json"
+  describe '#water_series_for_period' do
+    include_examples 'food_and_water_series', :water_series_for_period, '2018-01-01', '1d', 'user/%s/foods/log/water/date/2018-01-01/1d.json'
   end
 
   describe '#food_goals' do
@@ -103,26 +104,26 @@ describe FitgemOauth2::Client do
 
     it 'raises error if resource is invalid' do
       opts = {resource: 'cakes', start_date: Date.today - 1, end_date: Date.today}
-      expect { client.food_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Specify a valid resource from #{FitgemOauth2::Client::FOOD_SERIES_RESOURCES}")
+      expect { client.food_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Specify a valid resource from #{FitgemOauth2::Client::FOOD_SERIES_RESOURCES}")
     end
 
     it 'raises error if period is invalid' do
       opts = {resource: 'caloriesIn', start_date: Date.today - 1, period: '1year'}
-      expect { client.food_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Specify a valid period from #{FitgemOauth2::Client::FOOD_SERIES_PERIODS}")
+      expect { client.food_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Specify a valid period from #{FitgemOauth2::Client::FOOD_SERIES_PERIODS}")
     end
 
     it 'raises error if neither end_date nor period provided' do
       opts = {resource: 'caloriesIn', start_date: Date.today - 1}
-      expect { client.food_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.food_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'raises error if both end_date and period are provided' do
       opts = {resource: 'caloriesIn', start_date: Date.today - 1, end_date: Date.today, period: '1d'}
-      expect { client.food_series(opts) }.
-          to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.food_series(opts) }
+        .to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 
@@ -235,7 +236,6 @@ describe FitgemOauth2::Client do
     end
   end
 
-
   describe '#add_favorite_food' do
     it 'adds favorite food' do
       response = random_sequence
@@ -256,7 +256,6 @@ describe FitgemOauth2::Client do
     end
   end
 
-
   describe '#meals' do
     it 'gets meals' do
       url = "user/#{user_id}/meals.json"
@@ -266,10 +265,9 @@ describe FitgemOauth2::Client do
     end
   end
 
-
   describe '#create_meal' do
     it 'creates meal' do
-      response =random_sequence
+      response = random_sequence
       params = random_sequence
       url = "user/#{user_id}/meals.json"
       expect(client).to receive(:post_call).with(url, params).and_return(response)

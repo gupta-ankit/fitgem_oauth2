@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
   class Client
-    FAT_PERIODS = %w(1d 7d 1w 1m)
-    WEIGHT_PERIODS = %w(1d 7d 30d 1w 1m)
-    BODY_GOALS = %w(fat weight)
-    BODY_TIME_SERIES_PERIODS = %w(1d 7d 30d 1w 1m 3m 6m 1y max)
+    FAT_PERIODS = %w[1d 7d 1w 1m].freeze
+    WEIGHT_PERIODS = %w[1d 7d 30d 1w 1m].freeze
+    BODY_GOALS = %w[fat weight].freeze
+    BODY_TIME_SERIES_PERIODS = %w[1d 7d 30d 1w 1m 3m 6m 1y max].freeze
 
     # ======================================
     #      Boday Fat
@@ -15,13 +17,10 @@ module FitgemOauth2
     # @param end_date (optional)end date for the logs
     # @param period (optional) period for the logs
     def body_fat_logs(start_date: nil, end_date: nil, period: nil)
-      unless start_date
-        raise FitgemOauth2::InvalidArgumentError, 'must specify start_date'
-      end
+      raise FitgemOauth2::InvalidArgumentError, 'must specify start_date' unless start_date
+
       url = ['user', user_id, 'body/log/fat/date', format_date(start_date)].join('/')
-      if end_date
-        url = [url, format_date(end_date)].join('/')
-      end
+      url = [url, format_date(end_date)].join('/') if end_date
 
       if period
         if FAT_PERIODS.include?(period)
@@ -31,7 +30,7 @@ module FitgemOauth2
         end
       end
 
-      url = url + '.json'
+      url += '.json'
 
       get_call(url)
     end
@@ -47,7 +46,6 @@ module FitgemOauth2
     def delete_logged_body_fat(id)
       delete_call("user/#{user_id}/body/log/fat/#{id}.json")
     end
-
 
     # ==================================
     #   Body Time Series
@@ -78,15 +76,12 @@ module FitgemOauth2
         end
       end
 
-      if end_date
-        second = format_date(end_date)
-      end
+      second = format_date(end_date) if end_date
 
       url = [url, second].join('/')
 
       get_call(url + '.json')
     end
-
 
     # ======================================
     #      Body Goals
@@ -123,9 +118,7 @@ module FitgemOauth2
     # @param end_date (optional)end_date for the logs
     # @param period (optional)period for the logs
     def weight_logs(start_date: nil, end_date: nil, period: nil)
-      unless start_date
-        raise FitgemOauth2::InvalidArgumentError, 'start_date not specified.'
-      end
+      raise FitgemOauth2::InvalidArgumentError, 'start_date not specified.' unless start_date
 
       if period && end_date
         raise FitgemOauth2::InvalidArgumentError, 'both end_date and period specified. please provide only one.'
@@ -158,6 +151,5 @@ module FitgemOauth2
     def delete_logged_weight(id)
       delete_call("user/#{user_id}/body/log/weight/#{id}.json")
     end
-
   end
 end

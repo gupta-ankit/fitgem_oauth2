@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
   class Client
     def format_date(date)
-
       return nil if date.nil?
 
       valid_semantic_date = %w[today yesterday].include? date

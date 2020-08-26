@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FitgemOauth2
   class Client
     def add_favorite_food(food_id)

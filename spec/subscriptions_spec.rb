@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe FitgemOauth2::Client do
-
   let(:client) { FactoryGirl.build(:client) }
   let(:user_id) { client.user_id }
   let(:subscription_id) { 'xyz' }
@@ -9,7 +10,6 @@ describe FitgemOauth2::Client do
   let(:subscriptions) { {} }
 
   describe '#subscriptions' do
-
     it 'gets all subscriptions' do
       url = "user/#{user_id}/apiSubscriptions.json"
       expect(client).to receive(:get_call).with(url).and_return(subscriptions)
@@ -30,7 +30,6 @@ describe FitgemOauth2::Client do
   end
 
   describe '#create_subscription' do
-
     it 'creates a subscription to all' do
       url = "user/#{user_id}/apiSubscriptions/#{subscription_id}.json"
       expect(client).to receive(:post_call).with(url).and_return(subscriptions)
@@ -45,7 +44,6 @@ describe FitgemOauth2::Client do
   end
 
   describe '#remove_subscription' do
-
     it 'creates a subscription to all' do
       url = "user/#{user_id}/apiSubscriptions/#{subscription_id}.json"
       expect(client).to receive(:delete_call).with(url).and_return(subscriptions)
@@ -58,5 +56,4 @@ describe FitgemOauth2::Client do
       expect(client.remove_subscription(type: :sleep, subscription_id: subscription_id)).to eql(subscriptions)
     end
   end
-
 end
