@@ -1,3 +1,6 @@
+# 2.2.0
+* updated faraday gem to fix json vulerability in the faraday gem
+
 # 2.0.1
 * New feature - Client now throws an exception which the caller can check to see the case when the Fitbit API returns a 429
 

@@ -2,13 +2,11 @@ require 'webmock/rspec'
 include WebMock::API
 WebMock.enable!
 
-require 'codeclimate-test-reporter'
 require 'simplecov'
 require 'simplecov-console'
 
 SimpleCov.formatter = SimpleCov::Formatter::Console
 SimpleCov.start
-CodeClimate::TestReporter.start
 
 require 'bundler/setup'
 Bundler.setup
