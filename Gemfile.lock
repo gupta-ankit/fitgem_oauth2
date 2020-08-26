@@ -97,7 +97,7 @@ DEPENDENCIES
   rake (~> 13.0.1)
   rspec (~> 3.4)
   rubocop
-  simplecov
+  simplecov (~> 0.17)
   simplecov-console
   webmock
 
