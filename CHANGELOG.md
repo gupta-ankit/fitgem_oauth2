@@ -1,3 +1,8 @@
+# 3.0.0
+* This version is release for Ruby 3. If you encounter any issues using it with Ruby 2, use version 2.2 of this gem 
+* `food_series` has been removed. use `food_series_for_date_range`, `food_series_for_period`, `water_series_for_date_range`, or `water_series_for_period` instead.'
+* `heartrate_time_series` has been removed. Please use `hr_series_for_date_range` or `hr_series_for_period` instead.'
+
 # 2.2.0
 * updated faraday gem to fix json vulerability in the faraday gem
 
