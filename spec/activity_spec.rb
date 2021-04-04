@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe FitgemOauth2::Client do
-  let(:client) { FactoryGirl.build(:client) }
+  let(:client) { FactoryBot.build(:client) }
   let(:user_id) { client.user_id }
 
   let(:activities) { {} }
@@ -35,7 +35,7 @@ describe FitgemOauth2::Client do
         .with("user/#{user_id}/activities/#{@valid_resource}/date/#{client.format_date(@yesterday)}/#{client.format_date(@today)}.json")
         .and_return(@resp)
       opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today}
-      expect(client.activity_time_series(opts)).to eql(@resp)
+      expect(client.activity_time_series(**opts)).to eql(@resp)
     end
 
     it 'gets activity time series for base date and period' do
@@ -43,30 +43,30 @@ describe FitgemOauth2::Client do
         .with("user/#{user_id}/activities/#{@valid_resource}/date/#{client.format_date(@yesterday)}/#{@valid_period}.json")
         .and_return(@resp)
       opts = {resource: @valid_resource, start_date: @yesterday, period: @valid_period}
-      expect(client.activity_time_series(opts)).to eql(@resp)
+      expect(client.activity_time_series(**opts)).to eql(@resp)
     end
 
     it 'raises exception if the resource path is invalid' do
       opts = {resource: @invalid_resource, start_date: @yesterday, end_date: @today}
-      expect { client.activity_time_series(opts) }
+      expect { client.activity_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::ACTIVITY_RESOURCES}.")
     end
 
     it 'raises exception if period is invalid' do
       opts = {resource: @valid_resource, start_date: @yesterday, period: @invalid_period}
-      expect { client.activity_time_series(opts) }
+      expect { client.activity_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError,
                         "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::ACTIVITY_PERIODS}.")
     end
 
     it 'raises error if start date is not specified' do
       opts = {resource: @valid_resource, period: @invalid_period}
-      expect { client.activity_time_series(opts) }.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.activity_time_series(**opts) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'raises error if both period and end_date are specified' do
       opts = {resource: @invalid_resource, start_date: @yesterday, end_date: @today, period: @valid_period}
-      expect { client.activity_time_series(opts) }.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.activity_time_series(**opts) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 
@@ -90,48 +90,48 @@ describe FitgemOauth2::Client do
         url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@today}/#{@valid_detail_level}.json"
         opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level}
         expect(client).to receive(:get_call).with(url).and_return(@resp)
-        expect(client.intraday_activity_time_series(opts)).to eql(@resp)
+        expect(client.intraday_activity_time_series(**opts)).to eql(@resp)
       end
 
       it 'format #2' do
         url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/1d/#{@valid_detail_level}.json"
         opts = {resource: @valid_resource, start_date: @yesterday, detail_level: @valid_detail_level}
         expect(client).to receive(:get_call).with(url).and_return(@resp)
-        expect(client.intraday_activity_time_series(opts)).to eql(@resp)
+        expect(client.intraday_activity_time_series(**opts)).to eql(@resp)
       end
 
       it 'format #3' do
         url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@today}/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
         opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
         expect(client).to receive(:get_call).with(url).and_return(@resp)
-        expect(client.intraday_activity_time_series(opts)).to eql(@resp)
+        expect(client.intraday_activity_time_series(**opts)).to eql(@resp)
       end
 
       it 'format #4' do
         url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@today}/1d/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
         opts = {resource: @valid_resource, start_date: @today, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
         expect(client).to receive(:get_call).with(url).and_return(@resp)
-        expect(client.intraday_activity_time_series(opts)).to eql(@resp)
+        expect(client.intraday_activity_time_series(**opts)).to eql(@resp)
       end
     end
 
     it 'raises exception if resource is invalid' do
       opts = {resource: @invalid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level}
-      expect { client.intraday_activity_time_series(opts) }
+      expect { client.intraday_activity_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'Must specify resource to fetch intraday time series data for.'\
               ' One of (:calories, :steps, :distance, :floors, or :elevation) is required.')
     end
 
     it 'raises exception if detail_level is invalid' do
       opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @invalid_detail_level}
-      expect { client.intraday_activity_time_series(opts) }
+      expect { client.intraday_activity_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'Must specify the data resolution to fetch intraday time series data for.'\
               ' One of (\"1d\" or \"15min\") is required.')
     end
 
     it 'raises exception if start_date is not specified' do
       opts = {resource: @valid_resource, end_date: @today, detail_level: @invalid_detail_level}
-      expect { client.intraday_activity_time_series(opts) }
+      expect { client.intraday_activity_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'Must specify the start_date to fetch intraday time series data')
     end
   end

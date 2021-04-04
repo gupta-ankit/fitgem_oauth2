@@ -3,12 +3,12 @@
 require 'rspec'
 
 describe FitgemOauth2::Client do
-  let(:client) { FactoryGirl.build(:client) }
+  let(:client) { FactoryBot.build(:client) }
   let(:user_id) { client.user_id }
   let(:response) { random_sequence }
 
   shared_examples 'food_and_water_series' do |method, start_date, end_date_or_period, url|
-    let(:client) { FactoryGirl.build(:client) }
+    let(:client) { FactoryBot.build(:client) }
     let(:user_id) { client.user_id }
     let(:response) { random_sequence }
 
@@ -75,55 +75,6 @@ describe FitgemOauth2::Client do
       url = "user/#{user_id}/foods/log/water/goal.json"
       expect(client).to receive(:get_call).with(url).and_return(response)
       expect(client.water_goal).to eql(response)
-    end
-  end
-
-  describe '#food_series' do
-    before(:each) do
-      @valid_period = '1d'
-      @invalid_period = '1day'
-      @valid_resource = 'caloriesIn'
-      @invalid_resource = 'cakes'
-    end
-
-    it 'gets series in period' do
-      url = "user/#{user_id}/foods/log/#{@valid_resource}/date/#{client.format_date(Date.today - 1)}/#{@valid_period}.json"
-      opts = {resource: 'caloriesIn', start_date: Date.today - 1, period: '1d'}
-      response = random_sequence
-      expect(client).to receive(:get_call).with(url).and_return(response)
-      expect(client.food_series(opts)).to eql(response)
-    end
-
-    it 'gets series in range' do
-      url = "user/#{user_id}/foods/log/#{@valid_resource}/date/#{client.format_date(Date.today - 1)}/#{client.format_date(Date.today)}.json"
-      opts = {resource: 'caloriesIn', start_date: Date.today - 1, end_date: Date.today}
-      response = random_sequence
-      expect(client).to receive(:get_call).with(url).and_return(response)
-      expect(client.food_series(opts)).to eql(response)
-    end
-
-    it 'raises error if resource is invalid' do
-      opts = {resource: 'cakes', start_date: Date.today - 1, end_date: Date.today}
-      expect { client.food_series(opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Specify a valid resource from #{FitgemOauth2::Client::FOOD_SERIES_RESOURCES}")
-    end
-
-    it 'raises error if period is invalid' do
-      opts = {resource: 'caloriesIn', start_date: Date.today - 1, period: '1year'}
-      expect { client.food_series(opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Specify a valid period from #{FitgemOauth2::Client::FOOD_SERIES_PERIODS}")
-    end
-
-    it 'raises error if neither end_date nor period provided' do
-      opts = {resource: 'caloriesIn', start_date: Date.today - 1}
-      expect { client.food_series(opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError)
-    end
-
-    it 'raises error if both end_date and period are provided' do
-      opts = {resource: 'caloriesIn', start_date: Date.today - 1, end_date: Date.today, period: '1d'}
-      expect { client.food_series(opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError)
     end
   end
 
