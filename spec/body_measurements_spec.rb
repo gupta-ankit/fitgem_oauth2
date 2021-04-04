@@ -3,7 +3,7 @@
 require 'rspec'
 
 describe FitgemOauth2::Client do
-  let(:client) { FactoryGirl.build(:client) }
+  let(:client) { FactoryBot.build(:client) }
   let(:user_id) { client.user_id }
 
   describe '#body_fat_logs' do

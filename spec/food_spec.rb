@@ -3,12 +3,12 @@
 require 'rspec'
 
 describe FitgemOauth2::Client do
-  let(:client) { FactoryGirl.build(:client) }
+  let(:client) { FactoryBot.build(:client) }
   let(:user_id) { client.user_id }
   let(:response) { random_sequence }
 
   shared_examples 'food_and_water_series' do |method, start_date, end_date_or_period, url|
-    let(:client) { FactoryGirl.build(:client) }
+    let(:client) { FactoryBot.build(:client) }
     let(:user_id) { client.user_id }
     let(:response) { random_sequence }
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe FitgemOauth2::Client do
-  let(:client) { FactoryGirl.build(:client) }
+  let(:client) { FactoryBot.build(:client) }
 
   describe '#format_date' do
     it 'converts date object to yyyy-mm-dd' do
