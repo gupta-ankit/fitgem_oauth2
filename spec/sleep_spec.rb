@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rspec'
+require 'spec_helper'
 
 describe FitgemOauth2::Client do
   let(:client) { FactoryBot.build(:client) }
@@ -12,7 +12,7 @@ describe FitgemOauth2::Client do
     if args.empty?
       expect(client.public_send(method)).to eql(response)
     else
-      expect(client.public_send(method, args[0])).to eql(response)
+      expect(client.public_send(method, **args[0])).to eql(response)
     end
   end
 
@@ -83,25 +83,25 @@ describe FitgemOauth2::Client do
 
     it 'raises error if both end_date and period are specified' do
       opts = {resource: 'startTime', start_date: @yesterday, end_date: @today, period: @valid_period}
-      expect { client.sleep_time_series(opts) }
+      expect { client.sleep_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.')
     end
 
     it 'raises error if start_date is not given' do
       opts = {resource: 'startTime', end_date: @today, period: @valid_period}
-      expect { client.sleep_time_series(opts) }
+      expect { client.sleep_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'Start date not provided.')
     end
 
     it 'raises error if period is invalid' do
       opts = {resource: 'startTime', start_date: @yesterday, period: @invalid_period}
-      expect { client.sleep_time_series(opts) }
+      expect { client.sleep_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid period: #{opts[:period]}. Valid periods are #{FitgemOauth2::Client::SLEEP_PERIODS}.")
     end
 
     it 'raises error if resource is invalid' do
       opts = {start_date: @yesterday, period: @valid_period}
-      expect { client.sleep_time_series(opts) }
+      expect { client.sleep_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::SLEEP_RESOURCES}.")
     end
   end

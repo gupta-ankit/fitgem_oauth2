@@ -21,23 +21,6 @@ module FitgemOauth2
       get_call(url + '.json')
     end
 
-    # retrieve heartrate time series
-    def heartrate_time_series(start_date: nil, end_date: nil, period: nil)
-      warn '[DEPRECATION] `heartrate_time_series` is deprecated.  Please use `hr_series_for_date_range` or `hr_series_for_period` instead.'
-
-      regular_time_series_guard(
-        start_date: start_date,
-        end_date: end_date,
-        period: period
-      )
-
-      second = period || format_date(end_date)
-
-      url = ['user', user_id, 'activities/heart/date', format_date(start_date), second].join('/')
-
-      get_call(url + '.json')
-    end
-
     # retrieve intraday series for heartrate
     def intraday_heartrate_time_series(start_date: nil, end_date: nil, detail_level: nil, start_time: nil, end_time: nil)
       intraday_series_guard(
@@ -63,20 +46,6 @@ module FitgemOauth2
       unless period && HR_PERIODS.include?(period)
         raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Valid periods are #{HR_PERIODS}."
       end
-    end
-
-    def regular_time_series_guard(start_date:, end_date:, period:)
-      validate_start_date(start_date)
-
-      if end_date && period
-        raise FitgemOauth2::InvalidArgumentError, 'Both end_date and period specified. Specify only one.'
-      end
-
-      if !end_date && !period
-        raise FitgemOauth2::InvalidArgumentError, 'Neither end_date nor period specified. Specify at least one.'
-      end
-
-      validate_hr_period(period) if period
     end
 
     def intraday_series_guard(start_date:, end_date:, detail_level:, start_time:, end_time:)

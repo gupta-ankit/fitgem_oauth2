@@ -18,26 +18,26 @@ describe FitgemOauth2::Client do
       url = "user/#{user_id}/body/log/fat/date/#{@today}.json"
       opts = {start_date: @today}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.body_fat_logs(opts)).to eql(@response)
+      expect(client.body_fat_logs(**opts)).to eql(@response)
     end
 
     it 'return fat logs for period' do
       url = "user/#{user_id}/body/log/fat/date/#{@yesterday}/#{@today}.json"
       opts = {start_date: @yesterday, end_date: @today}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.body_fat_logs(opts)).to eql(@response)
+      expect(client.body_fat_logs(**opts)).to eql(@response)
     end
 
     it 'returns fat logs for range' do
       url = "user/#{user_id}/body/log/fat/date/#{@yesterday}/#{@valid_period}.json"
       opts = {start_date: @yesterday, period: @valid_period}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.body_fat_logs(opts)).to eql(@response)
+      expect(client.body_fat_logs(**opts)).to eql(@response)
     end
 
     it 'raises error if start date is not provided' do
       opts = {period: '1d'}
-      expect { client.body_fat_logs(opts) }.to raise_error(FitgemOauth2::InvalidArgumentError)
+      expect { client.body_fat_logs(**opts) }.to raise_error(FitgemOauth2::InvalidArgumentError)
     end
 
     it 'raises error if an invalid period is supplied' do
@@ -81,31 +81,31 @@ describe FitgemOauth2::Client do
       url = "user/#{user_id}/body/#{@valid_resource}/date/#{client.format_date(@today)}/#{@valid_period}.json"
       opts = {resource: @valid_resource, start_date: @today, period: @valid_period}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.body_time_series(opts)).to eql(@response)
+      expect(client.body_time_series(**opts)).to eql(@response)
     end
 
     it 'gets body time series for range' do
       url = "user/#{user_id}/body/#{@valid_resource}/date/#{client.format_date(@yesterday)}/#{client.format_date(@today)}.json"
       opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.body_time_series(opts)).to eql(@response)
+      expect(client.body_time_series(**opts)).to eql(@response)
     end
 
     it 'raises error on invalid period' do
       opts = {resource: @valid_resource, start_date: @today, period: @invalid_period}
-      expect { client.body_time_series(opts) }
+      expect { client.body_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid Period. Body time series period must be in #{FitgemOauth2::Client::BODY_TIME_SERIES_PERIODS}")
     end
 
     it 'raises error if start date is not specified' do
       opts = {resource: @valid_resource}
-      expect { client.body_time_series(opts) }
+      expect { client.body_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'resource and start_date are required parameters. Please specify both.')
     end
 
     it 'raises error if both end_date and period are specified' do
       opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, period: @valid_period}
-      expect { client.body_time_series(opts) }
+      expect { client.body_time_series(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'Please specify either period or end date, not both.')
     end
 
@@ -170,38 +170,38 @@ describe FitgemOauth2::Client do
       url = "user/#{user_id}/body/log/weight/date/#{client.format_date(@today)}.json"
       opts = {start_date: @today}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.weight_logs(opts)).to eql(@response)
+      expect(client.weight_logs(**opts)).to eql(@response)
     end
 
     it 'gets weight log for period' do
       url = "user/#{user_id}/body/log/weight/date/#{@today}/#{@valid_period}.json"
       opts = {start_date: @today, period: @valid_period}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.weight_logs(opts)).to eql(@response)
+      expect(client.weight_logs(**opts)).to eql(@response)
     end
 
     it 'gets weight log for range' do
       url = "user/#{user_id}/body/log/weight/date/#{@yesterday}/#{@today}.json"
       opts = {start_date: @yesterday, end_date: @today}
       expect(client).to receive(:get_call).with(url).and_return(@response)
-      expect(client.weight_logs(opts)).to eql(@response)
+      expect(client.weight_logs(**opts)).to eql(@response)
     end
 
     it 'raises error if start date is not specified' do
       opts = {end_date: @today}
-      expect { client.weight_logs(opts) }
+      expect { client.weight_logs(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'start_date not specified.')
     end
 
     it 'raises error if period is invalid' do
       opts = {start_date: @yesterday, period: @invalid_period}
-      expect { client.weight_logs(opts) }
+      expect { client.weight_logs(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, "valid period not specified. please choose a period from #{FitgemOauth2::Client::WEIGHT_PERIODS}")
     end
 
     it 'raises error if both end_date and period are specified' do
       opts = {start_date: @yesterday, end_date: @today, period: @valid_period}
-      expect { client.weight_logs(opts) }
+      expect { client.weight_logs(**opts) }
         .to raise_error(FitgemOauth2::InvalidArgumentError, 'both end_date and period specified. please provide only one.')
     end
   end
