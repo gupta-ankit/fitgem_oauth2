@@ -27,15 +27,12 @@ module FitgemOauth2
     attr_reader :user_id
     attr_reader :unit_system
 
-    def initialize(opts)
-      missing = %i[client_id client_secret token] - opts.keys
-      raise FitgemOauth2::InvalidArgumentError, "Missing required options: #{missing.join(',')}" unless missing.empty?
-
-      @client_id = opts[:client_id]
-      @client_secret = opts[:client_secret]
-      @token = opts[:token]
-      @user_id = (opts[:user_id] || DEFAULT_USER_ID)
-      @unit_system = opts[:unit_system]
+    def initialize(client_id:, client_secret:, token:, user_id:nil, unit_system: nil)
+      @client_id = client_id
+      @client_secret = client_secret
+      @token = token
+      @user_id = (user_id || DEFAULT_USER_ID)
+      @unit_system = unit_system
       @connection = Faraday.new('https://api.fitbit.com')
     end
 

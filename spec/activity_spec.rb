@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'byebug'
 
 describe FitgemOauth2::Client do
   let(:client) { FactoryBot.build(:client) }

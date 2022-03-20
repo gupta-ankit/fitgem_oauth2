@@ -14,9 +14,10 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://rubygems.org/gems/fitgem_oauth2'
   s.license     = 'MIT'
 
-  s.add_runtime_dependency 'faraday', '~> 1.0.1'
+  s.add_runtime_dependency 'faraday', '>= 1.0.1'
 
-  s.add_development_dependency 'factory_bot', '~> 4.5'
+  s.add_development_dependency 'factory_bot', '~> 6.2'
   s.add_development_dependency 'rake', '~> 13.0.1'
   s.add_development_dependency 'rspec', '~> 3.4'
+  s.add_development_dependency 'byebug'
 end
