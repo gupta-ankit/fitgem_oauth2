@@ -1,0 +1,11 @@
+services:
+  test-ruby2:
+    build:
+      context: .
+      args:
+        RUBY_VERSION: "2.7"
+  test-ruby3:
+    build:
+      context: .
+      args:
+        RUBY_VERSION: "3.3"
