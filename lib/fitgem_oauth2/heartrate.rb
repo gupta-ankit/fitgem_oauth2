@@ -26,7 +26,6 @@ module FitgemOauth2
                                        end_time: nil)
       intraday_series_guard(
         start_date: start_date,
-        end_date: end_date,
         detail_level: detail_level,
         start_time: start_time,
         end_time: end_time
