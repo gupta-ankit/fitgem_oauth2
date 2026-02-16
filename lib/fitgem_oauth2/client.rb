@@ -30,7 +30,7 @@ module FitgemOauth2
       @client_id = opts[:client_id]
       @client_secret = opts[:client_secret]
       @token = opts[:token]
-      @user_id = (opts[:user_id] || DEFAULT_USER_ID)
+      @user_id = opts[:user_id] || DEFAULT_USER_ID
       @unit_system = opts[:unit_system]
       @connection = Faraday.new('https://api.fitbit.com')
     end

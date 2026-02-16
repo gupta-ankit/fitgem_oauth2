@@ -13,12 +13,13 @@ Gem::Specification.new do |s|
   s.files       = %w[fitgem_oauth2.gemspec] + `git ls-files -z`.split("\x0").select {|f| f.start_with?('lib/') }
   s.homepage    = 'http://rubygems.org/gems/fitgem_oauth2'
   s.license     = 'MIT'
+  s.metadata    = {'rubygems_mfa_required' => 'true'}
 
-  s.required_ruby_version = '>= 2.7.0'
+  s.required_ruby_version = '>= 3.2.0'
 
-  s.add_runtime_dependency 'faraday', '~> 1.0.1'
+  s.add_dependency 'faraday', '~> 2.0'
 
-  s.add_development_dependency 'factory_bot', '~> 4.5'
-  s.add_development_dependency 'rake', '~> 13.0.1'
+  s.add_development_dependency 'factory_bot', '~> 6.0'
+  s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.4'
 end

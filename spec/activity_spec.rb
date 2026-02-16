@@ -138,8 +138,8 @@ describe FitgemOauth2::Client do
       expect { client.intraday_activity_time_series(**opts) }
         .to raise_error(
           FitgemOauth2::InvalidArgumentError,
-          'Must specify resource to fetch intraday time series data for.' \
-          ' One of (:calories, :steps, :distance, :floors, or :elevation) is required.'
+          'Must specify resource to fetch intraday time series data for. ' \
+          'One of (:calories, :steps, :distance, :floors, or :elevation) is required.'
         )
     end
 
@@ -151,8 +151,8 @@ describe FitgemOauth2::Client do
       expect { client.intraday_activity_time_series(**opts) }
         .to raise_error(
           FitgemOauth2::InvalidArgumentError,
-          'Must specify the data resolution to fetch intraday time series data for.' \
-          ' One of (\"1d\" or \"15min\") is required.'
+          'Must specify the data resolution to fetch intraday time series data for. ' \
+          'One of (\"1d\" or \"15min\") is required.'
         )
     end
 

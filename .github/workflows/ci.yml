@@ -1,18 +1,17 @@
 name: CI
 
-on:
-  push:
-  pull_request:
-
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        ruby-version: ['2.7', '3.3']
+        ruby-version: ['3.2', '3.3', '3.4', 'head']
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@v1
@@ -23,5 +22,17 @@ jobs:
       - name: Run tests
         run: bundle exec rspec
 
+      - name: Upload coverage to Qlty
+        if: matrix.ruby-version == '3.4'
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov/app.lcov
+
+      - name: Check diff coverage
+        if: matrix.ruby-version == '3.4'
+        run: bundle exec undercover --compare origin/${{ github.base_ref }}
+
       - name: Run rubocop
+        if: matrix.ruby-version == '3.4'
         run: bundle exec rubocop
