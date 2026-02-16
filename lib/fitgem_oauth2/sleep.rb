@@ -12,11 +12,11 @@ module FitgemOauth2
     # retrieve sleep logs for a date
     # @param date date for which sleep logs needs to be accessed
     def sleep_logs(date)
-      get_call_1_2("user/#{user_id}/sleep/date/#{format_date(date)}.json")
+      get_call12("user/#{user_id}/sleep/date/#{format_date(date)}.json")
     end
 
     def sleep_logs_by_date_range(start_date, end_date)
-      get_call_1_2("user/#{user_id}/sleep/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
+      get_call12("user/#{user_id}/sleep/date/#{format_date(start_date)}/#{format_date(end_date)}.json")
     end
 
     def sleep_logs_list(date, sort, limit)
@@ -28,7 +28,7 @@ module FitgemOauth2
       else
         raise FitgemOauth2::InvalidArgumentError, 'sort can either be asc or desc'
       end
-      get_call_1_2("user/#{user_id}/sleep/list.json?#{date_param}&offset=0&sort=#{sort}&limit=#{limit}")
+      get_call12("user/#{user_id}/sleep/list.json?#{date_param}&offset=0&sort=#{sort}&limit=#{limit}")
     end
 
     # retrieve sleep goal for the user
@@ -51,7 +51,8 @@ module FitgemOauth2
       raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.' unless start_date
 
       unless resource && SLEEP_RESOURCES.include?(resource)
-        raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Valid resources are #{SLEEP_RESOURCES}."
+        raise FitgemOauth2::InvalidArgumentError,
+              "Invalid resource: #{resource}. Valid resources are #{SLEEP_RESOURCES}."
       end
 
       if period && end_date
@@ -66,13 +67,13 @@ module FitgemOauth2
 
       url = ['user', user_id, 'sleep', resource, 'date', format_date(start_date), second].join('/')
 
-      get_call(url + '.json')
+      get_call("#{url}.json")
     end
 
     # log sleep
     # @param params POST params for creating sleep log
     def log_sleep(params)
-      post_call_1_2("user/#{user_id}/sleep.json", params)
+      post_call12("user/#{user_id}/sleep.json", params)
     end
 
     # deleted sleep log

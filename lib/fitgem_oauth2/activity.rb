@@ -26,12 +26,13 @@ module FitgemOauth2
     # retrieves activity time series, based on the arguments provided
     # @param resource the resource for which the series needs to be retrieved. one of ALLOWED_RESOURCES
     # @param start_date the start date for the series
-    # @param end_date the end date for the series. If specifying end_date, do not specify period
-    # @param period the period starting from start_date for which the series needs to be retrieved. If specifying period,
-    #             do not use end_date
+    # @param end_date the end date for the series. do not specify period
+    # @param period the period starting from start_date for which the series
+    #   needs to be retrieved. If specifying period, do not use end_date
     def activity_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
       unless resource && ACTIVITY_RESOURCES.include?(resource)
-        raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Valid resources are #{ACTIVITY_RESOURCES}."
+        raise FitgemOauth2::InvalidArgumentError,
+              "Invalid resource: #{resource}. Valid resources are #{ACTIVITY_RESOURCES}."
       end
 
       raise FitgemOauth2::InvalidArgumentError, 'Start date must be specified.' unless start_date
@@ -47,16 +48,18 @@ module FitgemOauth2
       first = format_date(start_date)
       second = period || format_date(end_date)
       url = ['user', user_id, 'activities', resource, 'date', first, second].join('/')
-      get_call(url + '.json')
+      get_call("#{url}.json")
     end
 
     # retrieves intraday activity time series.
-    # @param resource (required) for which the intrady series is retrieved. one of 'calories', 'steps', 'distance', 'floors', 'elevation'
+    # @param resource (required) for which the intrady series is retrieved.
+    #   one of 'calories', 'steps', 'distance', 'floors', 'elevation'
     # @param start_date (required) start date for the series
     # @param end_date (optional) end date for the series, if not specified, the series is for 1 day
     # @param detail_level (required) level of detail for the series
     # @param start_time (optional)start time for the series
     # @param end_time the (optional)end time for the series. specify both start_time and end_time, if using either
+    # rubocop:disable Metrics/ParameterLists
     def intraday_activity_time_series(resource: nil, start_date: nil, end_date: nil, detail_level: nil,
                                       start_time: nil, end_time: nil)
 
@@ -95,6 +98,7 @@ module FitgemOauth2
       end
       get_call("#{resource_path}.json")
     end
+    # rubocop:enable Metrics/ParameterLists
 
     # ======================================
     #      Activity Logging Methods

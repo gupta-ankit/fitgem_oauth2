@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fitgem_oauth2/food/collection.rb'
-require 'fitgem_oauth2/food/series.rb'
-require 'fitgem_oauth2/food/metadata.rb'
+require 'fitgem_oauth2/food/collection'
+require 'fitgem_oauth2/food/series'
+require 'fitgem_oauth2/food/metadata'
 
 module FitgemOauth2
   class Client
@@ -12,17 +12,18 @@ module FitgemOauth2
     private
 
     def validate_food_series_period(period)
-      unless FOOD_SERIES_PERIODS.include?(period)
-        raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Specify a valid period from #{FOOD_SERIES_PERIODS}"
-      end
+      return if FOOD_SERIES_PERIODS.include?(period)
+
+      raise FitgemOauth2::InvalidArgumentError,
+            "Invalid period: #{period}. Specify a valid period from #{FOOD_SERIES_PERIODS}"
     end
 
     def food_series_url(user_id, start_date, end_date_or_period)
-      ['user', user_id, 'foods/log/caloriesIn', 'date', start_date, end_date_or_period].join('/') + '.json'
+      "#{['user', user_id, 'foods/log/caloriesIn', 'date', start_date, end_date_or_period].join('/')}.json"
     end
 
     def water_series_url(user_id, start_date, end_date_or_period)
-      ['user', user_id, 'foods/log/water', 'date', start_date, end_date_or_period].join('/') + '.json'
+      "#{['user', user_id, 'foods/log/water', 'date', start_date, end_date_or_period].join('/')}.json"
     end
   end
 end

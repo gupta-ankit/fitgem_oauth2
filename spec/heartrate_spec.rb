@@ -50,15 +50,19 @@ describe FitgemOauth2::Client do
     end
 
     it 'gets for format#1' do
-      url = "user/#{user_id}/activities/heart/date/#{client.format_date(@start_date)}/#{client.format_date(@end_date)}/#{@valid_detail_level}.json"
+      url = "user/#{user_id}/activities/heart/date/" \
+            "#{client.format_date(@start_date)}/#{client.format_date(@end_date)}/#{@valid_detail_level}.json"
       opts = {start_date: @start_date, end_date: @end_date, detail_level: @valid_detail_level}
       expect(client).to receive(:get_call).with(url).and_return(@resp)
       expect(client.intraday_heartrate_time_series(**opts)).to eql(@resp)
     end
 
     it 'gets for format#2' do
-      url = "user/#{user_id}/activities/heart/date/#{client.format_date(@start_date)}/#{client.format_date(@end_date)}/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
-      opts = {start_date: @start_date, end_date: @end_date, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
+      url = "user/#{user_id}/activities/heart/date/" \
+            "#{client.format_date(@start_date)}/#{client.format_date(@end_date)}/" \
+            "#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
+      opts = {start_date: @start_date, end_date: @end_date, detail_level: @valid_detail_level, start_time: @start_time,
+              end_time: @end_time}
       expect(client).to receive(:get_call).with(url).and_return(@resp)
       expect(client.intraday_heartrate_time_series(**opts)).to eql(@resp)
     end
@@ -71,7 +75,8 @@ describe FitgemOauth2::Client do
     end
 
     it 'gets for format#4' do
-      url = "user/#{user_id}/activities/heart/date/#{client.format_date(@start_date)}/1d/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
+      url = "user/#{user_id}/activities/heart/date/" \
+            "#{client.format_date(@start_date)}/1d/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
       opts = {start_date: @start_date, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
       expect(client).to receive(:get_call).with(url).and_return(@resp)
       expect(client.intraday_heartrate_time_series(**opts)).to eql(@resp)

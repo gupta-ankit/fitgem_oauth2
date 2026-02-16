@@ -27,7 +27,7 @@ module FitgemOauth2
       url << 'apiSubscriptions'
       url << subscription_id if subscription_id
 
-      url.join('/') + '.json'
+      "#{url.join('/')}.json"
     end
   end
 end
