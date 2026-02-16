@@ -34,7 +34,7 @@ jobs:
         uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          files: coverage/lcov/app.lcov
+          files: coverage/lcov/fitgem_oauth2.lcov
 
       - name: Check diff coverage
         if: github.event_name == 'pull_request' && matrix.ruby-version == '3.4'
