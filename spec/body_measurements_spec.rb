@@ -84,7 +84,8 @@ describe FitgemOauth2::Client do
     end
 
     it 'gets body time series for range' do
-      url = "user/#{user_id}/body/#{@valid_resource}/date/#{client.format_date(@yesterday)}/#{client.format_date(@today)}.json"
+      url = "user/#{user_id}/body/#{@valid_resource}/date/" \
+            "#{client.format_date(@yesterday)}/#{client.format_date(@today)}.json"
       opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today}
       expect(client).to receive(:get_call).with(url).and_return(@response)
       expect(client.body_time_series(**opts)).to eql(@response)
@@ -93,8 +94,11 @@ describe FitgemOauth2::Client do
     it 'raises error on invalid period' do
       opts = {resource: @valid_resource, start_date: @today, period: @invalid_period}
       expect { client.body_time_series(**opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError,
-                        "Invalid Period. Body time series period must be in #{FitgemOauth2::Client::BODY_TIME_SERIES_PERIODS}")
+        .to raise_error(
+          FitgemOauth2::InvalidArgumentError,
+          'Invalid Period. Body time series period must be in ' \
+          "#{FitgemOauth2::Client::BODY_TIME_SERIES_PERIODS}"
+        )
     end
 
     it 'raises error if start date is not specified' do
@@ -198,8 +202,11 @@ describe FitgemOauth2::Client do
     it 'raises error if period is invalid' do
       opts = {start_date: @yesterday, period: @invalid_period}
       expect { client.weight_logs(**opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError,
-                        "valid period not specified. please choose a period from #{FitgemOauth2::Client::WEIGHT_PERIODS}")
+        .to raise_error(
+          FitgemOauth2::InvalidArgumentError,
+          'valid period not specified. please choose a period from ' \
+          "#{FitgemOauth2::Client::WEIGHT_PERIODS}"
+        )
     end
 
     it 'raises error if both end_date and period are specified' do

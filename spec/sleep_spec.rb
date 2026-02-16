@@ -37,9 +37,9 @@ describe FitgemOauth2::Client do
 
   describe '#sleep_logs_by_date_range' do
     it 'gets sleep for date range' do
-      get12_test(
-        "user/#{user_id}/sleep/date/#{client.format_date(Date.today.prev_day)}/#{client.format_date(Date.today)}.json", 'sleep_logs_by_date_range', Date.today.prev_day, Date.today
-      )
+      url = "user/#{user_id}/sleep/date/" \
+            "#{client.format_date(Date.today.prev_day)}/#{client.format_date(Date.today)}.json"
+      get12_test(url, 'sleep_logs_by_date_range', Date.today.prev_day, Date.today)
     end
   end
 
@@ -78,7 +78,8 @@ describe FitgemOauth2::Client do
     end
 
     it 'gets sleep time series for a range' do
-      url = "user/#{user_id}/sleep/#{@valid_resource}/date/#{client.format_date(@yesterday)}/#{client.format_date(@today)}.json"
+      url = "user/#{user_id}/sleep/#{@valid_resource}/date/" \
+            "#{client.format_date(@yesterday)}/#{client.format_date(@today)}.json"
       opts = {resource: 'startTime', start_date: @yesterday, end_date: @today}
       get_test(url, 'sleep_time_series', opts)
     end
@@ -105,8 +106,11 @@ describe FitgemOauth2::Client do
     it 'raises error if resource is invalid' do
       opts = {start_date: @yesterday, period: @valid_period}
       expect { client.sleep_time_series(**opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError,
-                        "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::SLEEP_RESOURCES}.")
+        .to raise_error(
+          FitgemOauth2::InvalidArgumentError,
+          "Invalid resource: #{opts[:resource]}. " \
+          "Valid resources are #{FitgemOauth2::Client::SLEEP_RESOURCES}."
+        )
     end
   end
 

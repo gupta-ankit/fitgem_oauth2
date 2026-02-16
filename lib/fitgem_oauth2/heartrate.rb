@@ -49,7 +49,7 @@ module FitgemOauth2
       raise FitgemOauth2::InvalidArgumentError, "Invalid period: #{period}. Valid periods are #{HR_PERIODS}."
     end
 
-    def intraday_series_guard(start_date:, end_date:, detail_level:, start_time:, end_time:)
+    def intraday_series_guard(start_date:, detail_level:, start_time:, end_time:)
       raise FitgemOauth2::InvalidArgumentError, 'Start date not provided.' unless start_date
 
       unless detail_level && HR_DETAIL_LEVELS.include?(detail_level)

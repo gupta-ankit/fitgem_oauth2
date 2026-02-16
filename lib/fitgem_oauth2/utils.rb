@@ -13,7 +13,8 @@ module FitgemOauth2
         date.strftime('%Y-%m-%d')
       else
         raise FitgemOauth2::InvalidDateArgument,
-              "Date used must be a date/time object or a string in the format YYYY-MM-DD; supplied argument is a #{date.class}"
+              'Date used must be a date/time object or a string in the format YYYY-MM-DD; ' \
+              "supplied argument is a #{date.class}"
       end
     end
 
@@ -24,7 +25,8 @@ module FitgemOauth2
         time.strftime('%H:%M')
       else
         raise FitgemOauth2::InvalidTimeArgument,
-              "Time used must be a DateTime/Time object or a string in the format hh:mm; supplied argument is a #{time.class}"
+              'Time used must be a DateTime/Time object or a string in the format hh:mm; ' \
+              "supplied argument is a #{time.class}"
       end
     end
 
@@ -39,7 +41,7 @@ module FitgemOauth2
     private
 
     def date_from_semantic(semantic)
-      if semantic === 'yesterday'
+      if semantic == 'yesterday'
         (Date.today - 1).strftime('%Y-%m-%d')
       elsif semantic == 'today'
         Date.today.strftime('%Y-%m-%d')

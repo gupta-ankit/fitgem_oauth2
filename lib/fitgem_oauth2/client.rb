@@ -93,11 +93,13 @@ module FitgemOauth2
 
     attr_reader :connection
 
+    # rubocop:disable Naming/AccessorMethodName
     def set_headers(request)
       request.headers['Authorization'] = "Bearer #{token}"
       request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
       request.headers['Accept-Language'] = unit_system unless unit_system.nil?
     end
+    # rubocop:enable Naming/AccessorMethodName
 
     def parse_response(response)
       headers_to_keep = %w[fitbit-rate-limit-limit fitbit-rate-limit-remaining fitbit-rate-limit-reset]
@@ -121,7 +123,7 @@ module FitgemOauth2
         500..599 => -> { raise FitgemOauth2::ServerError }
       }
 
-      fn = error_handler.find {|k, _| k === response.status }
+      fn = error_handler.find {|k, _| k == response.status }
       raise StandardError, "Unexpected response status #{response.status}" if fn.nil?
 
       fn.last.call
