@@ -13,7 +13,7 @@ services:
     build:
       context: .
       args:
-        RUBY_VERSION: "3.3"
+        RUBY_VERSION: "2.7"
     volumes:
       - .:/app
     command: bash
