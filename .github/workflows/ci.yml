@@ -23,21 +23,15 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
-      - name: Setup Code Climate reporter
-        if: matrix.ruby-version == '3.4'
-        run: |
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-          ./cc-test-reporter before-build
-
       - name: Run tests
         run: bundle exec rspec
 
-      - name: Upload coverage to Code Climate
-        if: matrix.ruby-version == '3.4' && success()
-        run: ./cc-test-reporter after-build
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      - name: Upload coverage to Qlty
+        if: matrix.ruby-version == '3.4'
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov/app.lcov
 
       - name: Check diff coverage
         if: github.event_name == 'pull_request' && matrix.ruby-version == '3.4'
