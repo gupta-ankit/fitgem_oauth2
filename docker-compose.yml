@@ -1,19 +1,19 @@
 services:
-  test-ruby2:
+  test-ruby3.1:
     build:
       context: .
       args:
-        RUBY_VERSION: "2.7"
-  test-ruby3:
+        RUBY_VERSION: "3.1"
+  test-ruby3.4:
     build:
       context: .
       args:
-        RUBY_VERSION: "3.3"
+        RUBY_VERSION: "3.4"
   shell:
     build:
       context: .
       args:
-        RUBY_VERSION: "2.7"
+        RUBY_VERSION: "3.4"
     volumes:
       - .:/app
     command: bash

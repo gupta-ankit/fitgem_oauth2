@@ -62,14 +62,13 @@ module FitgemOauth2
     # rubocop:disable Metrics/ParameterLists
     def intraday_activity_time_series(resource: nil, start_date: nil, end_date: nil, detail_level: nil,
                                       start_time: nil, end_time: nil)
-
       # converting to symbol to allow developer to use either 'calories' or :calories
       resource = resource.to_sym
 
       unless %i[calories steps distance floors elevation].include?(resource)
         raise FitgemOauth2::InvalidArgumentError,
-              'Must specify resource to fetch intraday time series data for.'\
-              ' One of (:calories, :steps, :distance, :floors, or :elevation) is required.'
+              'Must specify resource to fetch intraday time series data for. ' \
+              'One of (:calories, :steps, :distance, :floors, or :elevation) is required.'
       end
 
       unless start_date
@@ -81,8 +80,8 @@ module FitgemOauth2
 
       unless detail_level && %w[1min 15min].include?(detail_level)
         raise FitgemOauth2::InvalidArgumentError,
-              'Must specify the data resolution to fetch intraday time series data for.'\
-              ' One of (\"1d\" or \"15min\") is required.'
+              'Must specify the data resolution to fetch intraday time series data for. ' \
+              'One of (\"1d\" or \"15min\") is required.'
       end
 
       resource_path = [
