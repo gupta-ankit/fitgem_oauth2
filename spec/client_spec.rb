@@ -5,12 +5,16 @@ require 'spec_helper'
 describe FitgemOauth2::Client do
   let(:client_id) { '22942C' }
   let(:client_secret) { 'secret' }
-  let(:token) { 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0MzAzNDM3MzUsInNjb3BlcyI6Indwcm8gd2xvYyB3bnV0IHdzbGUgd3NldCB3aHIgd3dlaSB3YWN0IHdzb2MiLCJzdWIiOiJBQkNERUYiLCJhdWQiOiJJSktMTU4iLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpYXQiOjE0MzAzNDAxMzV9.z0VHrIEzjsBnjiNMBey6wtu26yHTnSWz_qlqoEpUlpc' }
+  let(:token) do
+    'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0MzAzNDM3MzUsInNjb3BlcyI6Indwcm8gd2xvYyB3bnV0IHdzbGUgd3NldCB3aHIgd3dlaSB3YWN0IHdzb2MiLCJzdWIiOiJBQkNERUYiLCJhdWQiOiJJSktMTU4iLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpYXQiOjE0MzAzNDAxMzV9.z0VHrIEzjsBnjiNMBey6wtu26yHTnSWz_qlqoEpUlpc'
+  end
   let(:user_id) { '26FWFL' }
   let(:unit_system) { 'en_US' }
   let(:client) { FitgemOauth2::Client.new(opts) }
 
-  let(:opts) { {client_id: client_id, client_secret: client_secret, token: token, user_id: user_id, unit_system: unit_system} }
+  let(:opts) do
+    {client_id: client_id, client_secret: client_secret, token: token, user_id: user_id, unit_system: unit_system}
+  end
 
   describe '#initialize' do
     it 'succeeds' do

@@ -58,7 +58,8 @@ describe FitgemOauth2::Client do
 
     it 'gets for format#2' do
       url = "user/#{user_id}/activities/heart/date/#{client.format_date(@start_date)}/#{client.format_date(@end_date)}/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
-      opts = {start_date: @start_date, end_date: @end_date, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
+      opts = {start_date: @start_date, end_date: @end_date, detail_level: @valid_detail_level, start_time: @start_time,
+              end_time: @end_time}
       expect(client).to receive(:get_call).with(url).and_return(@resp)
       expect(client.intraday_heartrate_time_series(**opts)).to eql(@resp)
     end

@@ -27,19 +27,23 @@ describe FitgemOauth2::Client do
   end
 
   describe '#food_series_for_date_range' do
-    include_examples 'food_and_water_series', :food_series_for_date_range, '2018-01-01', '2018-01-02', 'user/%s/foods/log/caloriesIn/date/2018-01-01/2018-01-02.json'
+    include_examples 'food_and_water_series', :food_series_for_date_range, '2018-01-01', '2018-01-02',
+                     'user/%s/foods/log/caloriesIn/date/2018-01-01/2018-01-02.json'
   end
 
   describe '#food_series_for_period' do
-    include_examples 'food_and_water_series', :food_series_for_period, '2018-01-01', '1d', 'user/%s/foods/log/caloriesIn/date/2018-01-01/1d.json'
+    include_examples 'food_and_water_series', :food_series_for_period, '2018-01-01', '1d',
+                     'user/%s/foods/log/caloriesIn/date/2018-01-01/1d.json'
   end
 
   describe '#water_series_for_date_range' do
-    include_examples 'food_and_water_series', :water_series_for_date_range, '2018-01-01', '2018-01-02', 'user/%s/foods/log/water/date/2018-01-01/2018-01-02.json'
+    include_examples 'food_and_water_series', :water_series_for_date_range, '2018-01-01', '2018-01-02',
+                     'user/%s/foods/log/water/date/2018-01-01/2018-01-02.json'
   end
 
   describe '#water_series_for_period' do
-    include_examples 'food_and_water_series', :water_series_for_period, '2018-01-01', '1d', 'user/%s/foods/log/water/date/2018-01-01/1d.json'
+    include_examples 'food_and_water_series', :water_series_for_period, '2018-01-01', '1d',
+                     'user/%s/foods/log/water/date/2018-01-01/1d.json'
   end
 
   describe '#food_goals' do

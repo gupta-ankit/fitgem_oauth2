@@ -49,7 +49,8 @@ describe FitgemOauth2::Client do
     it 'raises exception if the resource path is invalid' do
       opts = {resource: @invalid_resource, start_date: @yesterday, end_date: @today}
       expect { client.activity_time_series(**opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError, "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::ACTIVITY_RESOURCES}.")
+        .to raise_error(FitgemOauth2::InvalidArgumentError,
+                        "Invalid resource: #{opts[:resource]}. Valid resources are #{FitgemOauth2::Client::ACTIVITY_RESOURCES}.")
     end
 
     it 'raises exception if period is invalid' do
@@ -102,14 +103,16 @@ describe FitgemOauth2::Client do
 
       it 'format #3' do
         url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@yesterday}/#{@today}/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
-        opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
+        opts = {resource: @valid_resource, start_date: @yesterday, end_date: @today, detail_level: @valid_detail_level,
+                start_time: @start_time, end_time: @end_time}
         expect(client).to receive(:get_call).with(url).and_return(@resp)
         expect(client.intraday_activity_time_series(**opts)).to eql(@resp)
       end
 
       it 'format #4' do
         url = "user/#{user_id}/activities/#{@valid_resource}/date/#{@today}/1d/#{@valid_detail_level}/time/#{@start_time}/#{@end_time}.json"
-        opts = {resource: @valid_resource, start_date: @today, detail_level: @valid_detail_level, start_time: @start_time, end_time: @end_time}
+        opts = {resource: @valid_resource, start_date: @today, detail_level: @valid_detail_level,
+                start_time: @start_time, end_time: @end_time}
         expect(client).to receive(:get_call).with(url).and_return(@resp)
         expect(client.intraday_activity_time_series(**opts)).to eql(@resp)
       end
@@ -132,7 +135,8 @@ describe FitgemOauth2::Client do
     it 'raises exception if start_date is not specified' do
       opts = {resource: @valid_resource, end_date: @today, detail_level: @invalid_detail_level}
       expect { client.intraday_activity_time_series(**opts) }
-        .to raise_error(FitgemOauth2::InvalidArgumentError, 'Must specify the start_date to fetch intraday time series data')
+        .to raise_error(FitgemOauth2::InvalidArgumentError,
+                        'Must specify the start_date to fetch intraday time series data')
     end
   end
 
@@ -279,7 +283,8 @@ describe FitgemOauth2::Client do
       response = random_sequence
       params = random_sequence
       period = 'weekly'
-      expect(client).to receive(:post_call).with("user/#{user_id}/activities/goals/#{period}.json", params).and_return(response)
+      expect(client).to receive(:post_call).with("user/#{user_id}/activities/goals/#{period}.json",
+                                                 params).and_return(response)
       expect(client.update_activity_goals(period, params)).to eql(response)
     end
 

@@ -31,7 +31,8 @@ module FitgemOauth2
     #             do not use end_date
     def activity_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
       unless resource && ACTIVITY_RESOURCES.include?(resource)
-        raise FitgemOauth2::InvalidArgumentError, "Invalid resource: #{resource}. Valid resources are #{ACTIVITY_RESOURCES}."
+        raise FitgemOauth2::InvalidArgumentError,
+              "Invalid resource: #{resource}. Valid resources are #{ACTIVITY_RESOURCES}."
       end
 
       raise FitgemOauth2::InvalidArgumentError, 'Start date must be specified.' unless start_date
@@ -47,7 +48,7 @@ module FitgemOauth2
       first = format_date(start_date)
       second = period || format_date(end_date)
       url = ['user', user_id, 'activities', resource, 'date', first, second].join('/')
-      get_call(url + '.json')
+      get_call("#{url}.json")
     end
 
     # retrieves intraday activity time series.

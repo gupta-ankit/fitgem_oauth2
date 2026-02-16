@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'webmock/rspec'
-include WebMock::API
 WebMock.enable!
 
 require 'simplecov'
@@ -20,7 +19,7 @@ FactoryBot.definition_file_paths = %w[spec/factories]
 FactoryBot.find_definitions
 
 RSpec.configure do |config|
-  # some (optional) config here
+  config.include WebMock::API
 end
 
 def random_sequence

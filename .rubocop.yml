@@ -4,7 +4,7 @@ Metrics/LineLength:
 
 # Too short methods lead to extraction of single-use methods, which can make
 # the code easier to read (by naming things), but can also clutter the class
-Metrics/MethodLength: 
+Metrics/MethodLength:
   Max: 20
 
 # The guiding principle of classes is SRP, SRP can't be accurately measured by LoC
@@ -67,4 +67,13 @@ Style/SpaceInsideHashLiteralBraces:
 # value to a local variable for those cases.
 Style/MethodCalledOnDoEndBlock:
   Enabled: true
+
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+
 

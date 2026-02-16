@@ -23,11 +23,12 @@ module FitgemOauth2
       url = [url, format_date(end_date)].join('/') if end_date
 
       if period
-        if FAT_PERIODS.include?(period)
-          url = [url, period].join('/')
-        else
+        unless FAT_PERIODS.include?(period)
           raise FitgemOauth2::InvalidArgumentError, "period must be one in #{FAT_PERIODS}"
         end
+
+        url = [url, period].join('/')
+
       end
 
       url += '.json'
@@ -58,7 +59,8 @@ module FitgemOauth2
     # @param period (optional)period for the time series. valid periods are BODY_TIME_SERIES_PERIODS
     def body_time_series(resource: nil, start_date: nil, end_date: nil, period: nil)
       unless resource && start_date
-        raise FitgemOauth2::InvalidArgumentError, 'resource and start_date are required parameters. Please specify both.'
+        raise FitgemOauth2::InvalidArgumentError,
+              'resource and start_date are required parameters. Please specify both.'
       end
 
       url = ['user', user_id, 'body', resource, 'date', format_date(start_date)].join('/')
@@ -72,7 +74,8 @@ module FitgemOauth2
         if BODY_TIME_SERIES_PERIODS.include?(period)
           second = period
         else
-          raise FitgemOauth2::InvalidArgumentError, "Invalid Period. Body time series period must be in #{BODY_TIME_SERIES_PERIODS}"
+          raise FitgemOauth2::InvalidArgumentError,
+                "Invalid Period. Body time series period must be in #{BODY_TIME_SERIES_PERIODS}"
         end
       end
 
@@ -80,7 +83,7 @@ module FitgemOauth2
 
       url = [url, second].join('/')
 
-      get_call(url + '.json')
+      get_call("#{url}.json")
     end
 
     # ======================================
@@ -90,11 +93,11 @@ module FitgemOauth2
     # retrieves body goals based on the type specified
     # @param type 'fat' or 'weight'
     def body_goals(type)
-      if type && BODY_GOALS.include?(type)
-        get_call("user/#{user_id}/body/log/#{type}/goal.json")
-      else
+      unless type && BODY_GOALS.include?(type)
         raise FitgemOauth2::InvalidArgumentError, "invalid goal type : #{type}. must be one of #{BODY_GOALS}"
       end
+
+      get_call("user/#{user_id}/body/log/#{type}/goal.json")
     end
 
     # update body fat goal
@@ -124,10 +127,9 @@ module FitgemOauth2
         raise FitgemOauth2::InvalidArgumentError, 'both end_date and period specified. please provide only one.'
       end
 
-      if period
-        unless WEIGHT_PERIODS.include?(period)
-          raise FitgemOauth2::InvalidArgumentError, "valid period not specified. please choose a period from #{WEIGHT_PERIODS}"
-        end
+      if period && !WEIGHT_PERIODS.include?(period)
+        raise FitgemOauth2::InvalidArgumentError,
+              "valid period not specified. please choose a period from #{WEIGHT_PERIODS}"
       end
 
       first = format_date(start_date)
@@ -137,7 +139,7 @@ module FitgemOauth2
         url = [url, second].join('/')
       end
 
-      get_call(url + '.json')
+      get_call("#{url}.json")
     end
 
     # logs weight for the user

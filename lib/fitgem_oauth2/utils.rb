@@ -5,14 +5,15 @@ module FitgemOauth2
     def format_date(date)
       return nil if date.nil?
 
-      if date.is_a?(String) && date.match?(/\A\d{4}\-\d{2}\-\d{2}\z/)
+      if date.is_a?(String) && date.match?(/\A\d{4}-\d{2}-\d{2}\z/)
         date
       elsif date.is_a?(String) && %w[today yesterday].include?(date)
         date_from_semantic(date)
       elsif date.is_a?(Date) || date.is_a?(Time) || date.is_a?(DateTime)
         date.strftime('%Y-%m-%d')
       else
-        raise FitgemOauth2::InvalidDateArgument, "Date used must be a date/time object or a string in the format YYYY-MM-DD; supplied argument is a #{date.class}"
+        raise FitgemOauth2::InvalidDateArgument,
+              "Date used must be a date/time object or a string in the format YYYY-MM-DD; supplied argument is a #{date.class}"
       end
     end
 
@@ -22,7 +23,8 @@ module FitgemOauth2
       elsif time.is_a?(DateTime) || time.is_a?(Time)
         time.strftime('%H:%M')
       else
-        raise FitgemOauth2::InvalidTimeArgument, "Time used must be a DateTime/Time object or a string in the format hh:mm; supplied argument is a #{time.class}"
+        raise FitgemOauth2::InvalidTimeArgument,
+              "Time used must be a DateTime/Time object or a string in the format hh:mm; supplied argument is a #{time.class}"
       end
     end
 

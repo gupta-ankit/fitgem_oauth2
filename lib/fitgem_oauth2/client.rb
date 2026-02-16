@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require 'fitgem_oauth2/activity.rb'
-require 'fitgem_oauth2/body_measurements.rb'
-require 'fitgem_oauth2/devices.rb'
-require 'fitgem_oauth2/errors.rb'
-require 'fitgem_oauth2/food.rb'
-require 'fitgem_oauth2/friends.rb'
-require 'fitgem_oauth2/heartrate.rb'
-require 'fitgem_oauth2/sleep.rb'
-require 'fitgem_oauth2/subscriptions.rb'
-require 'fitgem_oauth2/users.rb'
-require 'fitgem_oauth2/utils.rb'
-require 'fitgem_oauth2/version.rb'
+require 'fitgem_oauth2/activity'
+require 'fitgem_oauth2/body_measurements'
+require 'fitgem_oauth2/devices'
+require 'fitgem_oauth2/errors'
+require 'fitgem_oauth2/food'
+require 'fitgem_oauth2/friends'
+require 'fitgem_oauth2/heartrate'
+require 'fitgem_oauth2/sleep'
+require 'fitgem_oauth2/subscriptions'
+require 'fitgem_oauth2/users'
+require 'fitgem_oauth2/utils'
+require 'fitgem_oauth2/version'
 
 require 'base64'
 require 'faraday'
@@ -21,11 +21,7 @@ module FitgemOauth2
     DEFAULT_USER_ID = '-'
     API_VERSION = '1'
 
-    attr_reader :client_id
-    attr_reader :client_secret
-    attr_reader :token
-    attr_reader :user_id
-    attr_reader :unit_system
+    attr_reader :client_id, :client_secret, :token, :user_id, :unit_system
 
     def initialize(opts)
       missing = %i[client_id client_secret token] - opts.keys
@@ -69,7 +65,7 @@ module FitgemOauth2
     # This method is a helper method (like get_call) for 1.2 version of the API_VERSION
     # This method is needed because Fitbit API supports both versions as of current
     # date (Nov 5, 2017)
-    def get_call_1_2(url)
+    def get_call12(url)
       url = "1.2/#{url}"
       response = connection.get(url) {|request| set_headers(request) }
       parse_response(response)
@@ -81,7 +77,7 @@ module FitgemOauth2
       parse_response(response)
     end
 
-    def post_call_1_2(url, params={})
+    def post_call12(url, params={})
       url = "1.2/#{url}"
       response = connection.post(url, params) {|request| set_headers(request) }
       parse_response(response)
@@ -126,11 +122,9 @@ module FitgemOauth2
       }
 
       fn = error_handler.find {|k, _| k === response.status }
-      if fn.nil?
-        raise StandardError, "Unexpected response status #{response.status}"
-      else
-        fn.last.call
-      end
+      raise StandardError, "Unexpected response status #{response.status}" if fn.nil?
+
+      fn.last.call
     end
   end
 end
