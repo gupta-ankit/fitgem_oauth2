@@ -130,8 +130,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
-  arm64-darwin-22
-  x86_64-linux
+  ruby
 
 DEPENDENCIES
   factory_bot (~> 6.0)
@@ -146,4 +145,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.4.19
+   2.6.9
