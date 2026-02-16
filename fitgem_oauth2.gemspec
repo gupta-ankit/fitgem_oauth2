@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.metadata    = {'rubygems_mfa_required' => 'true'}
 
-  s.required_ruby_version = '>= 3.1.0'
+  s.required_ruby_version = '>= 3.2.0'
 
   s.add_dependency 'faraday', '~> 2.0'
 
