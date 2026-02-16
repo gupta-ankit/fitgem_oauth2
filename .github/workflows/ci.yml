@@ -37,7 +37,7 @@ jobs:
           files: coverage/lcov/app.lcov
 
       - name: Check diff coverage
-        if: event_name == 'pull_request' && matrix.ruby-version == '3.4'
+        if: github.event_name == 'pull_request' && matrix.ruby-version == '3.4'
         run: bundle exec undercover --compare origin/${{ github.base_ref }}
 
       - name: Run rubocop
